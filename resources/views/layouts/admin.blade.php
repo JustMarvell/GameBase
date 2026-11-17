@@ -29,6 +29,7 @@ from-secondary to-primary text-white">
             @php
                 $menus = [
                     ['admin.dashboard', 'Dashboard', 'dashboard'],
+                    ['admin.games.index', 'Game', 'star'],
                     ['admin.genres.index', 'Genre', 'tag'],
                     ['admin.platforms.index', 'Platform', 'globe'],
                 ];
