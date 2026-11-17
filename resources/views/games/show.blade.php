@@ -7,9 +7,9 @@
         <div class="card-body gap-8 md:flex-row">
             <div class="w-full shrink-0 md:w-64">
                 @if ($game->cover_url)
-                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="aspect-[3/4] w-full rounded-xl object-cover shadow">
+                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="aspect-3/4 w-full rounded-xl object-cover shadow">
                 @else
-                    <div class="flex aspect-[3/4] w-full items-center justify-center rounded-xl bg-base-200 text-base-content/30">
+                    <div class="flex aspect-3/4 w-full items-center justify-center rounded-xl bg-base-200 text-base-content/30">
                         <x-icon name="photo" class="size-16" />
                     </div>
                 @endif
@@ -52,7 +52,7 @@
     </div>
 
     {{-- ===== ULASAN ===== --}}
-    <section class="mt-8" x-data>
+    <section id="ulasan" class="mt-8" x-data>
         <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Ulasan</h2>
 
         @auth

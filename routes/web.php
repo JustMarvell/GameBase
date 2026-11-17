@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/games/{game}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    Route::get('/my-reviews', [ReviewController::class, 'mine'])->name('reviews.mine');
 });
 
 Route::middleware(['auth', 'role:admin'])

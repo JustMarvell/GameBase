@@ -37,6 +37,7 @@
                         <div x-show="open" x-cloak @click.outside="open = false" x-transition
                             class="card absolute right-0 mt-2 w-52 shadow-xl ring-1 ring-base-content/10">
                             <ul class="menu w-full">
+                                <li><a href="{{ route('reviews.mine') }}">Ulasan Saya</a></li>
                                 @role('admin')
                                 <li><a href="{{ route('admin.dashboard') }}">Dashboard Admin</a></li>
                                 @endrole

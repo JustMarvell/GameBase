@@ -2,7 +2,7 @@
 
 <a href="{{ route('games.show', $game) }}"
    class="card overflow-hidden transition hover:-translate-y-1 hover:shadow-lg">
-    <div class="relative aspect-[3/4] bg-base-200">
+    <div class="relative aspect-3/4 bg-base-200">
         @if ($game->cover_url)
             <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="size-full object-cover" loading="lazy">
         @else

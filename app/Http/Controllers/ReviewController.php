@@ -59,7 +59,16 @@ class ReviewController extends Controller
         $gameId = $review->game_id;
         $review->delete();
 
-        return redirect()->route('games.show', $gameId)
-            ->with('success', 'Ulasan berhasil dihapus.');
+        return back()->with('success', 'Ulasan berhasil dihapus.');
+    }
+
+    public function mine(Request $request)
+    {
+        $reviews = $request->user()->reviews()
+            ->with('game.genre')
+            ->latest()
+            ->paginate(10);
+
+        return view('reviews.mine', compact('reviews'));
     }
 }
