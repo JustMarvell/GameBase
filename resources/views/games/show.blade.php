@@ -52,32 +52,86 @@
     </div>
 
     {{-- ===== ULASAN ===== --}}
-    <section class="mt-8">
+    <section class="mt-8" x-data>
         <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Ulasan</h2>
 
-        {{-- Form ulasan ditambahkan di Step 7 --}}
+        @auth
+            @if (! $myReview)
+                <div class="card mb-6">
+                    <div class="card-body p-5">
+                        <h3 class="font-bold">Tulis ulasan</h3>
+                        @include('games._review-form', ['action' => route('reviews.store', $game), 'review' => null])
+                    </div>
+                </div>
+            @endif
+        @else
+            <div class="alert alert-soft alert-info mb-6">
+                <a href="{{ route('login') }}" class="link font-semibold">Masuk</a>
+                atau
+                <a href="{{ route('register') }}" class="link font-semibold">daftar</a>
+                untuk menulis ulasan.
+            </div>
+        @endauth
 
         <div class="space-y-4">
             @forelse ($game->reviews as $review)
-                <div class="card">
+                @php
+                    $own = auth()->check() && $review->user_id === auth()->id();
+                    $canDelete = $own || (auth()->check() && auth()->user()->hasRole('admin'));
+                @endphp
+
+                <div class="card {{ $own ? 'ring-2 ring-primary/40' : '' }}"
+                     x-data="{ editing: {{ $own && $errors->any() ? 'true' : 'false' }} }">
                     <div class="card-body gap-2 p-5">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold">{{ $review->user->name }}</span>
+                            <span class="flex items-center gap-2 font-bold">
+                                {{ $review->user->name }}
+                                @if ($own)
+                                    <span class="badge badge-soft badge-primary badge-sm">Ulasan Anda</span>
+                                @endif
+                            </span>
                             <span class="flex items-center gap-1 font-bold">
                                 <x-icon name="star" class="size-5 fill-amber-400 text-amber-400" />
                                 {{ $review->rating }}/10
                             </span>
                         </div>
-                        @if ($review->body)
-                            <p class="whitespace-pre-line text-base-content/80">{{ $review->body }}</p>
+
+                        <div x-show="!editing">
+                            @if ($review->body)
+                                <p class="whitespace-pre-line text-base-content/80">{{ $review->body }}</p>
+                            @endif
+                        </div>
+
+                        @if ($own)
+                            <div x-show="editing" x-cloak class="mt-2">
+                                @include('games._review-form', ['action' => route('reviews.update', $review), 'review' => $review])
+                            </div>
                         @endif
-                        <p class="text-xs text-base-content/50">{{ $review->created_at->diffForHumans() }}</p>
+
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-base-content/50">{{ $review->created_at->diffForHumans() }}</p>
+
+                            <div class="flex gap-1">
+                                @if ($own)
+                                    <button type="button" @click="editing = !editing"
+                                            x-text="editing ? 'Batal' : 'Edit'" class="btn btn-text btn-sm"></button>
+                                @endif
+                                @if ($canDelete)
+                                    <button type="button" class="btn btn-text btn-sm text-error"
+                                            @click="$dispatch('open-delete', @js(['action' => route('reviews.destroy', $review), 'name' => 'ulasan dari '.$review->user->name]))">
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             @empty
                 <p class="text-base-content/60">Belum ada ulasan untuk game ini.</p>
             @endforelse
         </div>
+
+        <x-confirm-delete />
     </section>
 
     {{-- ===== GAME SEJENIS ===== --}}

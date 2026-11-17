@@ -55,6 +55,10 @@ class PublicGameController extends Controller
             ->take(4)
             ->get();
 
-        return view('games.show', compact('game', 'related'));
+        $myReview = auth()->check()
+            ? $game->reviews->firstWhere('user_id', auth()->id())
+            : null;
+
+        return view('games.show', compact('game', 'related', 'myReview'));
     }
 }

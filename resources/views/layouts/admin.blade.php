@@ -32,6 +32,7 @@ from-secondary to-primary text-white">
                     ['admin.games.index', 'Game', 'star'],
                     ['admin.genres.index', 'Genre', 'tag'],
                     ['admin.platforms.index', 'Platform', 'globe'],
+                    ['admin.reviews.index', 'Ulasan', 'newspaper'],
                 ];
             @endphp
             {{-- Komponen "menu" FlyonUI --}}
