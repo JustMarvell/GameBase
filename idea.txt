@@ -1,0 +1,17 @@
+Framework Programming UAS Project.
+
+Main Idea : Game Review/Library Site
+
+public page :
+- Home | /
+- Game List | /games
+- Game Detail | /game/{id}
+- Genre Page | /genres/{id}
+- Login | /login
+
+admin page :
+- Dashboard | /admin/dashboard
+- Genre CRUD | /admin/genres
+- Game CRUD | /admin/games
+
+
