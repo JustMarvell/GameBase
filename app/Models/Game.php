@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Game extends Model
 {
@@ -12,8 +14,6 @@ class Game extends Model
         'title',
         'developer',
         'release_year',
-        'platform',
-        'rating',
         'cover',
         'description',
     ];
@@ -21,5 +21,15 @@ class Game extends Model
     public function genre(): BelongsTo
     {
         return $this->belongsTo(Genre::class);
+    }
+
+    public function platforms(): BelongsToMany
+    {
+        return $this->belongsToMany(Platform::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }

@@ -16,9 +16,7 @@ return new class extends Migration
             $table->foreignId('genre_id')->constrained()->restrictOnDelete();
             $table->string('title', 255);
             $table->string('developer', 100);
-            $table->integer('release_year');
-            $table->string('platform', 100);
-            $table->decimal('rating', 3, 1)->default(0); // 0.0 - 10.0
+            $table->unsignedSmallInteger('release_year');
             $table->string('cover')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

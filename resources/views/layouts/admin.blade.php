@@ -27,11 +27,11 @@ from-secondary to-primary text-white">
                 <span class="text-lg font-extrabold text-white">{{ config('app.name') }}</span>
             </div>
             @php
-// Daftar menu: [nama route, label, ikon]
-$menus = [
-    ['admin.dashboard', 'Dashboard', 'dashboard'],
-    // menu Kategori & Berita ditambahkan di Pertemuan 12
-];
+                $menus = [
+                    ['admin.dashboard', 'Dashboard', 'dashboard'],
+                    ['admin.genres.index', 'Genre', 'tag'],
+                    ['admin.platforms.index', 'Platform', 'globe'],
+                ];
             @endphp
             {{-- Komponen "menu" FlyonUI --}}
             <ul class="menu w-full flex-1 gap-1 px-3 py-6">
