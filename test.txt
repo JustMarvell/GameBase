@@ -1,29 +1,49 @@
-@import 'tailwindcss';
-/* ===== FlyonUI: kumpulan komponen siap pakai (btn, card, input, badge, dll) ===== */
-@plugin "flyonui";
-/* Ubah warna tema "light" bawaan FlyonUI menjadi warna portal berita kita */
-@plugin "flyonui/theme" {
-name: "light";
-default: true;
---color-primary: oklch(58.6% 0.253 17.585);
-/* merah (rose-600) */
---color-primary-content: oklch(100% 0 0);
-/* teks di atas primary */
---color-secondary: oklch(51.1% 0.262 276.966);
-/* ungu (indigo-600) */
---color-secondary-content: oklch(100% 0 0);
---color-accent: oklch(82.8% 0.189 84.429);
-/* kuning (amber-400) */
---color-accent-content: oklch(27.9% 0.077 45.635);
-}
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-@theme {
---font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-}
-/* Sembunyikan elemen ber-atribut x-cloak sebelum Alpine siap */
-[x-cloak] {
-display: none !important;
-}
+@extends('layouts.admin')
+@section('title', 'Dashboard')
+@section('content')
+<div class="card bg-gradient-to-r from-secondary to-primary text-white shadow-lg">
+<div class="card-body">
+<p class="text-sm text-white/80">Selamat datang kembali,</p>
+<h2 class="text-3xl font-extrabold">{{ auth()->user()->name }} 👋</h2>
+<p class="mt-2 max-w-xl text-white/90">
+Login admin dengan Fortify dan role Spatie sudah berhasil.
+Pada pertemuan berikutnya kita akan membuat fitur kelola kategori dan berita.
+</p>
+</div>
+</div>
+<div class="mt-6 grid gap-6 md:grid-cols-3">
+<div class="card">
+<div class="card-body">
+<div class="flex size-11 items-center justify-center rounded-xl bg-secondary/10
+text-secondary">
+<x-icon name="user" class="size-6" />
+</div>
+<p class="mt-3 text-sm text-base-content/60">Login sebagai</p>
+<p class="text-lg font-bold">{{ auth()->user()->email }}</p>
+</div>
+</div>
+<div class="card">
+<div class="card-body">
+<div class="flex size-11 items-center justify-center rounded-xl bg-success/15
+text-success">
+<x-icon name="check-circle" class="size-6" />
+</div>
+<p class="mt-3 text-sm text-base-content/60">Role</p>
+<p class="text-lg font-bold">
+<span class="badge badge-soft badge-success badge-lg">{{ auth()->user()-
+>getRoleNames()->implode(', ') }}</span>
+</p>
+</div>
+</div>
+<div class="card">
+<div class="card-body">
+<div class="flex size-11 items-center justify-center rounded-xl bg-accent/20
+text-amber-600">
+<x-icon name="calendar" class="size-6" />
+</div>
+<p class="mt-3 text-sm text-base-content/60">Hari ini</p>
+<p class="text-lg font-bold">{{ now()->translatedFormat('l, d F Y') }}</p>
+</div>
+</div>
+</div>
+@endsection
