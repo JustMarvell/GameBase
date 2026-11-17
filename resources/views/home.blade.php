@@ -3,10 +3,107 @@
 @section('title', 'Beranda')
 
 @section('content')
-    <div class="card bg-gradient-to-r from-secondary to-primary text-white shadow-lg">
-        <div class="card-body">
-            <h1 class="text-3xl font-extrabold">Selamat datang di {{ config('app.name') }}</h1>
-            <p>Temukan dan ulas game favoritmu.</p>
+
+    {{-- ===== SLIDER (Alpine.js) ===== --}}
+    @if ($slides->isNotEmpty())
+        <div x-data="{
+                        i: 0, n: {{ $slides->count() }}, timer: null,
+                        start() { this.timer = setInterval(() => this.i = (this.i + 1) % this.n, 5000) },
+                        stop() { clearInterval(this.timer) },
+                        next() { this.i = (this.i + 1) % this.n },
+                        prev() { this.i = (this.i - 1 + this.n) % this.n },
+                     }" x-init="start()" @mouseenter="stop()" @mouseleave="start()"
+            class="relative h-72 overflow-hidden rounded-2xl bg-slate-900 shadow-lg md:h-96">
+
+            @foreach ($slides as $k => $game)
+                <a href="{{ route('games.show', $game) }}" x-show="i === {{ $k }}" x-transition.opacity.duration.500ms @if ($k > 0)
+                x-cloak @endif class="absolute inset-0 block">
+
+                    @if ($game->cover_url)
+                        <img src="{{ $game->cover_url }}" alt=""
+                            class="absolute inset-0 size-full scale-110 object-cover opacity-50 blur-md">
+                    @else
+                        <div class="absolute inset-0 bg-linear-to-br from-secondary to-primary"></div>
+                    @endif
+                    <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                    <div class="relative flex h-full items-end justify-between gap-6 p-6 md:p-10">
+                        <div class="max-w-xl text-white">
+                            <span class="badge badge-accent">{{ $game->genre->name }}</span>
+                            <h2 class="mt-3 text-2xl font-extrabold md:text-4xl">{{ $game->title }}</h2>
+                            <p class="mt-2 flex items-center gap-2 text-sm">
+                                <x-icon name="star" class="size-5 fill-amber-400 text-amber-400" />
+                                <span
+                                    class="font-bold">{{ $game->reviews_avg_rating ? number_format($game->reviews_avg_rating, 1) : '-' }}</span>
+                                <span class="text-white/70">/ 10 &middot; {{ $game->reviews_count }} ulasan</span>
+                            </p>
+                        </div>
+
+                        @if ($game->cover_url)
+                            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}"
+                                class="hidden h-56 rounded-xl object-cover shadow-2xl ring-2 ring-white/30 md:block">
+                        @endif
+                    </div>
+                </a>
+            @endforeach
+
+            <button @click="prev()" class="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-white/80"
+                aria-label="Sebelumnya">
+                <x-icon name="chevron-left" class="size-5" />
+            </button>
+            <button @click="next()" class="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-white/80"
+                aria-label="Berikutnya">
+                <x-icon name="chevron-right" class="size-5" />
+            </button>
+
+            <div class="absolute right-4 top-4 flex gap-1.5">
+                @foreach ($slides as $k => $game)
+                    <button @click="i = {{ $k }}" aria-label="Slide {{ $k + 1 }}"
+                        :class="i === {{ $k }} ? 'w-6 bg-accent' : 'w-2 bg-white/60'"
+                        class="h-2 rounded-full transition-all"></button>
+                @endforeach
+            </div>
         </div>
+    @endif
+
+    {{-- ===== KONTEN ===== --}}
+    <div class="mt-10 grid gap-8 lg:grid-cols-4">
+        <section class="lg:col-span-3">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="border-l-4 border-primary pl-3 text-xl font-extrabold">Game Terbaru</h2>
+                <a href="{{ route('games.index') }}" class="link link-primary text-sm font-semibold">Lihat semua</a>
+            </div>
+
+            @if ($latest->isEmpty())
+                <p class="text-base-content/60">Belum ada game.</p>
+            @else
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+                    @foreach ($latest as $game)
+                        <x-game-card :game="$game" />
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
+        <aside>
+            <div class="card bg-linear-to-br from-secondary to-primary text-white shadow-lg">
+                <div class="card-body">
+                    <h3 class="flex items-center gap-2 font-bold">
+                        <x-icon name="tag" class="size-5" /> Genre
+                    </h3>
+                    <ul class="mt-2 space-y-2">
+                        @foreach ($genres as $genre)
+                            <li>
+                                <a href="{{ route('genres.show', $genre) }}"
+                                    class="flex items-center justify-between rounded-lg bg-white/15 px-3 py-2 text-sm font-semibold hover:bg-white/25">
+                                    {{ $genre->name }}
+                                    <span class="badge badge-sm bg-white text-primary">{{ $genre->games_count }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </aside>
     </div>
 @endsection
