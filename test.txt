@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+/* ===== FlyonUI: kumpulan komponen siap pakai (btn, card, input, badge, dll) ===== */
+@plugin "flyonui";
+/* Ubah warna tema "light" bawaan FlyonUI menjadi warna portal berita kita */
+@plugin "flyonui/theme" {
+name: "light";
+default: true;
+--color-primary: oklch(58.6% 0.253 17.585);
+/* merah (rose-600) */
+--color-primary-content: oklch(100% 0 0);
+/* teks di atas primary */
+--color-secondary: oklch(51.1% 0.262 276.966);
+/* ungu (indigo-600) */
+--color-secondary-content: oklch(100% 0 0);
+--color-accent: oklch(82.8% 0.189 84.429);
+/* kuning (amber-400) */
+--color-accent-content: oklch(27.9% 0.077 45.635);
+}
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@theme {
+--font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
+/* Sembunyikan elemen ber-atribut x-cloak sebelum Alpine siap */
+[x-cloak] {
+display: none !important;
+}
