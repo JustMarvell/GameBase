@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.17.5",
-        "flyonui": "^2.4.1"
+        "flyonui": "^2.4.1",
+        "sortablejs": "^1.15.7"
     }
 }
