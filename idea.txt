@@ -8,6 +8,8 @@ public page :
 - Game Detail | /game/{id}
 - Genre Page | /genres/{id}
 - Login | /login
+- Register | /register
+- My Reviews | /my-reviews 
 
 admin page :
 - Dashboard | /admin/dashboard
