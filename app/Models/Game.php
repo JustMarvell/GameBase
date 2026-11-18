@@ -17,6 +17,7 @@ class Game extends Model
         'release_year',
         'cover',
         'description',
+        'cover_link',
     ];
 
     public function genre(): BelongsTo
@@ -36,9 +37,13 @@ class Game extends Model
 
     protected function coverUrl(): Attribute
     {
-        return Attribute::get(
-            fn() => $this->cover ? asset('storage/' . $this->cover) : null
-        );
+        return Attribute::get(function () {
+            if ($this->cover) {
+                return asset('storage/' . $this->cover);
+            }
+
+            return $this->cover_link ?: null;
+        });
     }
 
     public function media(): HasMany

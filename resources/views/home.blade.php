@@ -20,7 +20,7 @@
                 x-cloak @endif class="absolute inset-0 block">
 
                     @if ($game->cover_url)
-                        <img src="{{ $game->cover_url }}" alt=""
+                        <img src="{{ $game->cover_url }}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"
                             class="absolute inset-0 size-full scale-110 object-cover opacity-50 blur-md">
                     @else
                         <div class="absolute inset-0 bg-linear-to-br from-secondary to-primary"></div>
@@ -40,7 +40,7 @@
                         </div>
 
                         @if ($game->cover_url)
-                            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}"
+                            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" referrerpolicy="no-referrer" onerror="this.remove()"
                                 class="hidden h-56 rounded-xl object-cover shadow-2xl ring-2 ring-white/30 md:block">
                         @endif
                     </div>

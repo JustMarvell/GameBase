@@ -29,7 +29,7 @@
                         <tr>
                             <td>
                                 @if ($game->cover_url)
-                                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="h-14 w-10 rounded object-cover">
+                                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="h-14 w-10 rounded object-cover" referrerpolicy="no-referrer">
                                 @else
                                     <div class="flex h-14 w-10 items-center justify-center rounded bg-base-200 text-base-content/40">
                                         <x-icon name="photo" class="size-5" />

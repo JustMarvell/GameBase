@@ -8,6 +8,7 @@ use App\Models\Genre;
 use App\Models\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Support\MediaLink;
 
 class GameController extends Controller
 {
@@ -21,6 +22,16 @@ class GameController extends Controller
             'platforms' => ['nullable', 'array'],
             'platforms.*' => ['exists:platforms,id'],
             'cover' => ['nullable', 'image', 'max:10240'],
+            'cover_link' => [
+                'nullable',
+                'url:http,https',
+                'max:2048',
+                function ($attribute, $value, $fail) {
+                    if ($value && MediaLink::youtubeId($value)) {
+                        $fail('Cover harus berupa link gambar, bukan video.');
+                    }
+                }
+            ],
             'description' => ['nullable', 'string'],
         ];
     }
@@ -45,11 +56,7 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->rules());
-
-        if ($request->hasFile('cover')) {
-            $data['cover'] = $request->file('cover')->store('covers', 'public');
-        }
+        $data = $this->handleCover($request, $request->validate($this->rules()));
 
         $game = Game::create(collect($data)->except('platforms')->all());
         $game->platforms()->sync($request->input('platforms', []));
@@ -71,14 +78,7 @@ class GameController extends Controller
 
     public function update(Request $request, Game $game)
     {
-        $data = $request->validate($this->rules());
-
-        if ($request->hasFile('cover')) {
-            if ($game->cover) {
-                Storage::disk('public')->delete($game->cover);
-            }
-            $data['cover'] = $request->file('cover')->store('covers', 'public');
-        }
+        $data = $this->handleCover($request, $request->validate($this->rules()), $game);
 
         $game->update(collect($data)->except('platforms')->all());
         $game->platforms()->sync($request->input('platforms', []));
@@ -94,12 +94,41 @@ class GameController extends Controller
         }
 
         foreach ($game->media as $item) {
-            Storage::disk('public')->delete($item->path);
+            if ($item->path) {
+                Storage::disk('public')->delete($item->path);
+            }
         }
 
         $game->delete(); // pivot rows and reviews are removed by cascade
 
         return redirect()->route('admin.games.index')
             ->with('success', 'Game berhasil dihapus.');
+    }
+
+    /** The selected tab (cover_mode) decides whether the file or the link is used. */
+    private function handleCover(Request $request, array $data, ?Game $game = null): array
+    {
+        $mode = $request->input('cover_mode');
+
+        if ($mode === 'link' && filled($data['cover_link'] ?? null)) {
+            $this->deleteCoverFile($game);
+            $data['cover'] = null;
+            $data['cover_link'] = MediaLink::directImageUrl($data['cover_link']);
+        } elseif ($mode === 'upload' && $request->hasFile('cover')) {
+            $this->deleteCoverFile($game);
+            $data['cover'] = $request->file('cover')->store('covers', 'public');
+            $data['cover_link'] = null;
+        } else {
+            unset($data['cover'], $data['cover_link']); // keep the current cover
+        }
+
+        return $data;
+    }
+
+    private function deleteCoverFile(?Game $game): void
+    {
+        if ($game?->cover) {
+            Storage::disk('public')->delete($game->cover);
+        }
     }
 }

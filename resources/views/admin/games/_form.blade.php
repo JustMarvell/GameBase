@@ -60,20 +60,36 @@ $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all()
         <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
     </div>
 
-    {{-- Cover dengan preview (Alpine.js) --}}
-    <div x-data="{ preview: @js(isset($game) ? $game->cover_url : null) }">
-        <label for="cover" class="label-text font-semibold">Poster / Cover potret (maks 10MB)</label>
-        <input id="cover" type="file" name="cover" accept="image/*" class="input"
-            @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : preview">
-        <p class="mt-1 text-xs text-base-content/60">
-            Tampil di beranda dan daftar game. Rasio ideal 3:4 (contoh 600×800).
-            Gambar landscape &amp; video diunggah lewat "Kelola Galeri".
-        </p>
-        @error('cover')
-        <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+    {{-- Cover potret: unggah file atau tempel link --}}
+    <div x-data="{ mode: '{{ old('cover_mode', isset($game) && $game->cover_link ? 'link' : 'upload') }}' }">
+        <input type="hidden" name="cover_mode" :value="mode">
 
-        <img x-show="preview" x-cloak :src="preview" alt="Preview cover"
-            class="mt-3 h-48 rounded-lg object-cover shadow">
+        <span class="label-text font-semibold">Poster / Cover potret</span>
+        <div class="mt-2 flex gap-2">
+            <button type="button" @click="mode = 'upload'" :class="mode === 'upload' ? 'btn-primary' : 'btn-soft btn-primary'" class="btn btn-sm">Unggah file</button>
+            <button type="button" @click="mode = 'link'" :class="mode === 'link' ? 'btn-primary' : 'btn-soft btn-primary'" class="btn btn-sm">Tempel link</button>
+        </div>
+
+        {{-- Unggah file --}}
+        <div x-show="mode === 'upload'" x-cloak
+            x-data="{ preview: @js(isset($game) && $game->cover ? asset('storage/'.$game->cover) : null) }" class="mt-3">
+            <input id="cover" type="file" name="cover" accept="image/*" class="input"
+                @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : preview">
+            <p class="mt-1 text-xs text-base-content/60">
+                Maks 10MB. Tampil di beranda dan daftar game. Rasio ideal 3:4 (contoh 600×800).
+                Gambar landscape &amp; video diatur lewat "Kelola Galeri".
+            </p>
+            @error('cover') <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+
+            <img x-show="preview" x-cloak :src="preview" alt="Preview cover" class="mt-3 h-48 rounded-lg object-cover shadow">
+        </div>
+
+        {{-- Tempel link --}}
+        <div x-show="mode === 'link'" x-cloak
+            x-data="linkPreview('cover', @js(old('cover_link', $game->cover_link ?? '')))" class="mt-3">
+            <x-link-preview name="cover_link" placeholder="https://... (link langsung ke gambar)" :cover="true" />
+            @error('cover_link') <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+        </div>
     </div>
 
     <div>

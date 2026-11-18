@@ -13,7 +13,7 @@
         @if ($game->media->isEmpty())
             <div class="w-full shrink-0 md:w-64">
                 @if ($game->cover_url)
-                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="aspect-3/4 w-full rounded-xl object-cover shadow">
+                    <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="aspect-3/4 w-full rounded-xl object-cover shadow" referrerpolicy="no-referrer">
                 @else
                     <div class="flex aspect-3/4 w-full items-center justify-center rounded-xl bg-base-200 text-base-content/30">
                         <x-icon name="photo" class="size-16" />

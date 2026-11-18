@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\GameMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Support\MediaLink;
 
 class GameMediaController extends Controller
 {
@@ -80,8 +81,35 @@ class GameMediaController extends Controller
     public function destroy(GameMedia $media)
     {
         Storage::disk('public')->delete($media->path);
+        if ($media->path) {
+            Storage::disk('public')->delete($media->path);
+        }
         $media->delete();
 
         return back()->with('success', 'Media berhasil dihapus.');
+    }
+
+    public function storeLink(Request $request, Game $game)
+    {
+        $data = $request->validate([
+            'link' => ['required', 'url:http,https', 'max:2048'],
+        ], [
+            'link.required' => 'Tempel link terlebih dahulu.',
+            'link.url' => 'Link tidak valid. Harus diawali http:// atau https://',
+        ]);
+
+        $youtubeId = MediaLink::youtubeId($data['link']);
+        $position = (GameMedia::where('game_id', $game->id)->max('position') ?? -1) + 1;
+
+        $game->media()->create([
+            'type' => $youtubeId ? 'video' : 'image',
+            'source' => 'link',
+            'link_url' => $youtubeId
+                ? "https://www.youtube.com/watch?v={$youtubeId}"
+                : MediaLink::directImageUrl($data['link']),
+            'position' => $position,
+        ]);
+
+        return back()->with('success', $youtubeId ? 'Video YouTube berhasil ditambahkan.' : 'Link gambar berhasil ditambahkan.');
     }
 }

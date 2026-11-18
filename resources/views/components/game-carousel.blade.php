@@ -6,19 +6,25 @@
 
     <div class="relative">
         <div x-ref="slides" class="relative aspect-video w-full">
-            @foreach ($media as $k => $item)
-                <div data-index="{{ $k }}" x-show="i === {{ $k }}" x-transition.opacity.duration.300ms
-                     @if ($k > 0) x-cloak @endif
-                     class="absolute inset-0">
-                    @if ($item->isVideo())
-                        <video src="{{ $item->url }}" controls preload="metadata" playsinline
-                               class="size-full object-contain"></video>
-                    @else
-                        <img src="{{ $item->url }}" alt="" class="size-full object-cover"
-                             @if ($k > 0) loading="lazy" @endif>
-                    @endif
-                </div>
-            @endforeach
+        @foreach ($media as $k => $item)
+            <div data-index="{{ $k }}" x-show="i === {{ $k }}" x-transition.opacity.duration.300ms
+                @if ($k > 0) x-cloak @endif
+                class="absolute inset-0">
+                @if ($item->isYoutube() && $item->youtubeId())
+                    <iframe data-yt class="size-full"
+                            src="https://www.youtube-nocookie.com/embed/{{ $item->youtubeId() }}?enablejsapi=1&rel=0&playsinline=1&origin={{ urlencode(request()->getSchemeAndHttpHost()) }}"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen title="Video {{ $k + 1 }}"></iframe>
+                @elseif ($item->isVideo())
+                    <video src="{{ $item->url }}" controls preload="metadata" playsinline
+                        class="size-full object-contain"></video>
+                @else
+                    <img src="{{ $item->url }}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"
+                        class="size-full object-cover"
+                        @if ($k > 0) loading="lazy" @endif>
+                @endif
+            </div>
+        @endforeach
         </div>
 
         @if ($media->count() > 1)

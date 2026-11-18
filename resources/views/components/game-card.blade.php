@@ -2,18 +2,19 @@
 
 <a href="{{ route('games.show', $game) }}"
     class="group card overflow-hidden transition duration-200 hover:-translate-y-1 hover:glow">
-    <div class="relative aspect-3/4 overflow-hidden bg-base-300">
+    <div class="relative aspect-[3/4] overflow-hidden bg-base-300">
+        <div class="absolute inset-0 flex items-center justify-center text-base-content/30">
+            <x-icon name="photo" class="size-12" />
+        </div>
+    
         @if ($game->cover_url)
-            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" loading="lazy"
-                class="size-full object-cover transition duration-300 group-hover:scale-105">
-        @else
-            <div class="flex size-full items-center justify-center text-base-content/30">
-                <x-icon name="photo" class="size-12" />
-            </div>
+            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" loading="lazy" referrerpolicy="no-referrer"
+                onerror="this.remove()"
+                class="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105">
         @endif
-
+    
         <span class="badge badge-secondary absolute left-2 top-2">{{ $game->genre->name }}</span>
-
+    
         <span
             class="absolute bottom-2 right-2 flex items-center gap-1 rounded-lg bg-black/70 px-2 py-1 text-xs font-bold text-white backdrop-blur">
             <x-icon name="star" class="size-3.5 fill-amber-400 text-amber-400" />

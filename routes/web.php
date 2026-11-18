@@ -37,5 +37,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('games/{game}/media', [GameMediaController::class, 'store'])->name('games.media.store');
         Route::post('games/{game}/media/reorder', [GameMediaController::class, 'reorder'])->name('games.media.reorder');
         Route::delete('media/{media}', [GameMediaController::class, 'destroy'])->name('media.destroy');
+        Route::post('games/{game}/media/link', [GameMediaController::class, 'storeLink'])->name('games.media.link');
     });
     

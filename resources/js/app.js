@@ -2,42 +2,85 @@ import './bootstrap';
 // Alpine.js: membuat elemen HTML menjadi interaktif
 import Alpine from 'alpinejs';
 import Sortable from 'sortablejs';
+import { youtubeId, directImageUrl, isHttpUrl } from './media-link';
 
 window.Alpine = Alpine;
 window.Sortable = Sortable;
 
 // Carousel for the game detail page (images + videos)
-Alpine.data('gameCarousel', (count) => ({
-    i: 0,
-    n: count,
-    timer: null,
-    hovering: false,
+Alpine.data('gameCarousel', (count) => {
+    // Kept outside Alpine's reactive data on purpose (YouTube player objects)
+    const players = {};
+    const states = {};
 
-    init() {
-        if (this.n > 1) {
-            this.timer = setInterval(() => this.tick(), 5000);
-        }
-    },
+    return {
+        i: 0,
+        n: count,
+        timer: null,
+        hovering: false,
 
-    tick() {
-        if (this.hovering) return;
+        init() {
+            this.$nextTick(() => {
+                if (this.$refs.slides.querySelector('iframe[data-yt]')) {
+                    this.setupYouTube();
+                }
+            });
 
-        // Do not slide away from a video that is playing or paused midway
-        const video = this.$refs.slides.querySelector(`[data-index="${this.i}"] video`);
-        if (video && (!video.paused || (video.currentTime > 0 && !video.ended))) return;
+            if (this.n > 1) {
+                this.timer = setInterval(() => this.tick(), 5000);
+            }
+        },
 
-        this.go(this.i + 1);
-    },
+        setupYouTube() {
+            const create = () => {
+                this.$refs.slides.querySelectorAll('iframe[data-yt]').forEach((frame) => {
+                    const index = Number(frame.closest('[data-index]').dataset.index);
+                    players[index] = new window.YT.Player(frame, {
+                        events: { onStateChange: (e) => { states[index] = e.data; } },
+                    });
+                });
+            };
 
-    go(index) {
-        this.$refs.slides.querySelectorAll('video').forEach((v) => v.pause());
-        this.i = (index + this.n) % this.n;
-    },
+            if (window.YT && window.YT.Player) {
+                create();
+                return;
+            }
 
-    destroy() {
-        clearInterval(this.timer);
-    },
-}));
+            window.onYouTubeIframeAPIReady = create;
+            const script = document.createElement('script');
+            script.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(script);
+        },
+
+        tick() {
+            if (this.hovering) return;
+
+            const slide = this.$refs.slides.querySelector(`[data-index="${this.i}"]`);
+
+            // Uploaded video: playing, or paused midway
+            const video = slide?.querySelector('video');
+            if (video && (!video.paused || (video.currentTime > 0 && !video.ended))) return;
+
+            // YouTube: 1 = playing, 2 = paused, 3 = buffering
+            if ([1, 2, 3].includes(states[this.i])) return;
+
+            this.go(this.i + 1);
+        },
+
+        go(index) {
+            this.$refs.slides.querySelectorAll('video').forEach((v) => v.pause());
+            Object.values(players).forEach((p) => {
+                try { p.pauseVideo(); } catch (e) { /* player not ready yet */ }
+            });
+
+            this.i = (index + this.n) % this.n;
+        },
+
+        destroy() {
+            clearInterval(this.timer);
+        },
+    };
+});
 
 // Drag-and-drop ordering in the admin gallery page
 Alpine.data('mediaSorter', (url, token) => ({
@@ -67,6 +110,70 @@ Alpine.data('mediaSorter', (url, token) => ({
                 }
             },
         });
+    },
+}));
+
+// Live preview for pasted links (gallery: image or YouTube, cover: image only)
+Alpine.data('linkPreview', (mode = 'gallery', initial = '') => ({
+    url: initial,
+    status: 'idle',   // idle | loading | ok | error
+    kind: null,       // 'image' | 'youtube'
+    ytId: null,
+    imgSrc: '',
+    message: '',
+
+    init() {
+        this.$watch('url', () => this.check());
+        if (initial) this.check();
+    },
+
+    check() {
+        const value = this.url.trim();
+        this.kind = null;
+        this.ytId = null;
+        this.imgSrc = '';
+        this.message = '';
+
+        if (!value) {
+            this.status = 'idle';
+            return;
+        }
+
+        if (!isHttpUrl(value)) {
+            this.status = 'error';
+            this.message = 'Link tidak valid. Harus diawali http:// atau https://';
+            return;
+        }
+
+        const id = youtubeId(value);
+        if (id) {
+            if (mode === 'cover') {
+                this.status = 'error';
+                this.message = 'Cover harus berupa link gambar, bukan video.';
+                return;
+            }
+            this.kind = 'youtube';
+            this.ytId = id;
+            this.status = 'ok';
+            return;
+        }
+
+        this.kind = 'image';
+        this.status = 'loading';
+        this.imgSrc = directImageUrl(value);
+    },
+
+    loaded() {
+        this.status = 'ok';
+    },
+
+    failed() {
+        this.status = 'error';
+        this.message = 'Gambar tidak bisa dimuat. Pastikan link langsung ke file gambar dan bisa diakses publik.';
+    },
+
+    get ready() {
+        return this.status === 'ok';
     },
 }));
 
