@@ -30,6 +30,13 @@
                     <div class="relative flex h-full items-end justify-between gap-6 p-6 md:p-10">
                         <div class="max-w-xl text-white">
                             <span class="badge badge-accent">{{ $game->genre->name }}</span>
+                            @auth
+                                @if (auth()->user()->hasInLibrary($game->id))
+                                    <span class="badge badge-success ml-1 gap-1">
+                                        <x-icon name="bookmark" class="size-3 fill-current" /> Di Library
+                                    </span>
+                                @endif
+                            @endauth
                             <h2 class="mt-3 text-2xl font-extrabold md:text-4xl">{{ $game->title }}</h2>
                             <p class="mt-2 flex items-center gap-2 text-sm">
                                 <x-icon name="star" class="size-5 fill-amber-400 text-amber-400" />

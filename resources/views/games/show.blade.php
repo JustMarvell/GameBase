@@ -34,6 +34,35 @@
                     <span class="text-base-content/60">/ 10 &middot; {{ $game->reviews->count() }} ulasan</span>
                 </div>
 
+                @php $inLibrary = auth()->check() && auth()->user()->hasInLibrary($game->id); @endphp
+
+                <div class="mt-5 flex flex-wrap items-center gap-2">
+                    @guest
+                        <a href="{{ route('login') }}" class="btn btn-primary">
+                            <x-icon name="bookmark" class="size-5" /> Tambah ke Library
+                        </a>
+                        <span class="text-sm text-base-content/60">Masuk untuk menyimpan game ini.</span>
+                    @else
+                        @if ($inLibrary)
+                            <span class="badge badge-soft badge-success badge-lg gap-1">
+                                <x-icon name="bookmark" class="size-4 fill-current" /> Ada di library Anda
+                            </span>
+                            <form method="POST" action="{{ route('library.destroy', $game) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-soft btn-error btn-sm">Hapus dari Library</button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('library.store', $game) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">
+                                    <x-icon name="bookmark" class="size-5" /> Tambah ke Library
+                                </button>
+                            </form>
+                        @endif
+                    @endguest
+                </div>
+
                 <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
                     <dt class="text-base-content/60">Developer</dt>
                     <dd class="font-semibold">{{ $game->developer }}</dd>

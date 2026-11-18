@@ -2,7 +2,7 @@
 
 <a href="{{ route('games.show', $game) }}"
     class="group card overflow-hidden transition duration-200 hover:-translate-y-1 hover:glow">
-    <div class="relative aspect-[3/4] overflow-hidden bg-base-300">
+    <div class="relative aspect-3/4 overflow-hidden bg-base-300">
         <div class="absolute inset-0 flex items-center justify-center text-base-content/30">
             <x-icon name="photo" class="size-12" />
         </div>
@@ -14,6 +14,15 @@
         @endif
     
         <span class="badge badge-secondary absolute left-2 top-2">{{ $game->genre->name }}</span>
+        @auth
+            @if (auth()->user()->hasInLibrary($game->id))
+                <span
+                    class="glow absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-primary text-primary-content"
+                    title="Ada di library Anda">
+                    <x-icon name="bookmark" class="size-4 fill-current" />
+                </span>
+            @endif
+        @endauth
     
         <span
             class="absolute bottom-2 right-2 flex items-center gap-1 rounded-lg bg-black/70 px-2 py-1 text-xs font-bold text-white backdrop-blur">

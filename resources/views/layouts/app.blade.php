@@ -20,6 +20,10 @@
             <div class="hidden items-center gap-6 text-sm font-semibold md:flex">
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-primary' : 'hover:text-primary' }}">Beranda</a>
                 <a href="{{ route('games.index') }}" class="{{ request()->routeIs('games.*') ? 'text-primary' : 'hover:text-primary' }}">Game</a>
+                @auth
+                    <a href="{{ route('library.index') }}"
+                        class="{{ request()->routeIs('library.*') ? 'text-primary' : 'hover:text-primary' }}">Library Saya</a>
+                @endauth
             </div>
 
             <form method="GET" action="{{ route('games.index') }}" class="hidden max-w-xs flex-1 md:block">
@@ -43,6 +47,7 @@
                         <div x-show="open" x-cloak @click.outside="open = false" x-transition
                             class="card absolute right-0 mt-2 w-52 shadow-xl">
                             <ul class="menu w-full">
+                                <li><a href="{{ route('library.index') }}">Library Saya</a></li>
                                 <li><a href="{{ route('reviews.mine') }}">Ulasan Saya</a></li>
                                 @role('admin')
                                     <li><a href="{{ route('admin.dashboard') }}">Dashboard Admin</a></li>
@@ -76,6 +81,9 @@
             </form>
             <a href="{{ route('home') }}" class="block">Beranda</a>
             <a href="{{ route('games.index') }}" class="block">Game</a>
+            @auth
+                <a href="{{ route('library.index') }}" class="block">Library Saya</a>
+            @endauth
         </div>
     </header>
 

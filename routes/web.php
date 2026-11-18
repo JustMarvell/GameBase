@@ -11,6 +11,7 @@ use App\Http\Controllers\PublicGenreController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\GameMediaController;
+use App\Http\Controllers\LibraryController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
@@ -22,6 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     Route::get('/my-reviews', [ReviewController::class, 'mine'])->name('reviews.mine');
+    Route::get('/my-library', [LibraryController::class, 'index'])->name('library.index');
+    Route::post('/games/{game}/library', [LibraryController::class, 'store'])->name('library.store');
+    Route::delete('/games/{game}/library', [LibraryController::class, 'destroy'])->name('library.destroy');
 });
 
 Route::middleware(['auth', 'role:admin'])
