@@ -54,6 +54,9 @@
                             <td>{{ $game->reviews_avg_rating ? number_format($game->reviews_avg_rating, 1) : '-' }}</td>
                             <td>
                                 <div class="flex justify-end gap-1">
+                                    <a href="{{ route('admin.games.media.index', $game) }}" class="btn btn-text btn-square btn-sm" aria-label="Galeri">
+                                        <x-icon name="photo" class="size-4" />
+                                    </a>
                                     <a href="{{ route('admin.games.edit', $game) }}" class="btn btn-text btn-square btn-sm" aria-label="Edit">
                                         <x-icon name="pencil" class="size-4" />
                                     </a>

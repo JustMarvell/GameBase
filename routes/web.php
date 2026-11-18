@@ -10,6 +10,7 @@ use App\Http\Controllers\PublicGameController;
 use App\Http\Controllers\PublicGenreController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\GameMediaController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
@@ -32,5 +33,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('platforms', PlatformController::class)->except('show');
         Route::resource('games', GameController::class)->except('show');
         Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
+        Route::get('games/{game}/media', [GameMediaController::class, 'index'])->name('games.media.index');
+        Route::post('games/{game}/media', [GameMediaController::class, 'store'])->name('games.media.store');
+        Route::post('games/{game}/media/reorder', [GameMediaController::class, 'reorder'])->name('games.media.reorder');
+        Route::delete('media/{media}', [GameMediaController::class, 'destroy'])->name('media.destroy');
     });
     

@@ -1,7 +1,7 @@
 @csrf
 
 @php
-    $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all() : []);
+$selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all() : []);
 @endphp
 
 <div class="space-y-5">
@@ -62,9 +62,13 @@
 
     {{-- Cover dengan preview (Alpine.js) --}}
     <div x-data="{ preview: @js(isset($game) ? $game->cover_url : null) }">
-        <label for="cover" class="label-text font-semibold">Cover (maks 2MB)</label>
+        <label for="cover" class="label-text font-semibold">Poster / Cover potret (maks 10MB)</label>
         <input id="cover" type="file" name="cover" accept="image/*" class="input"
             @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : preview">
+        <p class="mt-1 text-xs text-base-content/60">
+            Tampil di beranda dan daftar game. Rasio ideal 3:4 (contoh 600×800).
+            Gambar landscape &amp; video diunggah lewat "Kelola Galeri".
+        </p>
         @error('cover')
         <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
 

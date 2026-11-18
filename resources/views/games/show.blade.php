@@ -3,8 +3,14 @@
 @section('title', $game->title)
 
 @section('content')
+    @if ($game->media->isNotEmpty())
+        <div class="mb-6">
+            <x-game-carousel :media="$game->media" />
+        </div>
+    @endif
     <div class="card">
         <div class="card-body gap-8 md:flex-row">
+        @if ($game->media->isEmpty())
             <div class="w-full shrink-0 md:w-64">
                 @if ($game->cover_url)
                     <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" class="aspect-3/4 w-full rounded-xl object-cover shadow">
@@ -14,6 +20,7 @@
                     </div>
                 @endif
             </div>
+        @endif
 
             <div class="flex-1">
                 <a href="{{ route('genres.show', $game->genre) }}" class="badge badge-secondary">{{ $game->genre->name }}</a>
@@ -56,7 +63,7 @@
         <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Ulasan</h2>
 
         @auth
-            @if (! $myReview)
+            @if (!$myReview)
                 <div class="card mb-6">
                     <div class="card-body p-5">
                         <h3 class="font-bold">Tulis ulasan</h3>
@@ -76,8 +83,8 @@
         <div class="space-y-4">
             @forelse ($game->reviews as $review)
                 @php
-                    $own = auth()->check() && $review->user_id === auth()->id();
-                    $canDelete = $own || (auth()->check() && auth()->user()->hasRole('admin'));
+    $own = auth()->check() && $review->user_id === auth()->id();
+    $canDelete = $own || (auth()->check() && auth()->user()->hasRole('admin'));
                 @endphp
 
                 <div class="card {{ $own ? 'ring-2 ring-primary/40' : '' }}"
@@ -118,7 +125,7 @@
                                 @endif
                                 @if ($canDelete)
                                     <button type="button" class="btn btn-text btn-sm text-error"
-                                            @click="$dispatch('open-delete', @js(['action' => route('reviews.destroy', $review), 'name' => 'ulasan dari '.$review->user->name]))">
+                                            @click="$dispatch('open-delete', @js(['action' => route('reviews.destroy', $review), 'name' => 'ulasan dari ' . $review->user->name]))">
                                         Hapus
                                     </button>
                                 @endif

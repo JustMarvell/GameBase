@@ -40,4 +40,9 @@ class Game extends Model
             fn() => $this->cover ? asset('storage/' . $this->cover) : null
         );
     }
+
+    public function media(): HasMany
+    {
+        return $this->hasMany(GameMedia::class)->orderBy('position');
+    }
 }
