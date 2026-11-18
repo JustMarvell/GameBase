@@ -13,7 +13,7 @@
          class="mt-3 overflow-hidden rounded-xl bg-black shadow {{ $cover ? 'aspect-3/4 w-40' : 'aspect-video w-full max-w-md' }}">
         <template x-if="kind === 'image' && imgSrc">
             <img :src="imgSrc" alt="Pratinjau" referrerpolicy="no-referrer"
-                 @load="loaded()" @error="failed()" class="size-full object-cover">
+                 x-on:load="loaded()" x-on:error="failed()" class="size-full object-cover">
         </template>
         <template x-if="kind === 'youtube'">
             <iframe :src="'https://www.youtube-nocookie.com/embed/' + ytId" class="size-full"
