@@ -29,10 +29,10 @@
                             <td><span class="badge badge-soft badge-primary">{{ $platform->games_count }}</span></td>
                             <td>
                                 <div class="flex justify-end gap-1">
-                                    <a href="{{ route('admin.platforms.edit', $platform) }}" class="btn btn-text btn-square btn-sm" aria-label="Edit">
+                                    <a href="{{ route('admin.platforms.edit', $platform) }}" class="btn btn-soft btn-primary btn-square btn-sm" aria-label="Edit">
                                         <x-icon name="pencil" class="size-4" />
                                     </a>
-                                    <button type="button" class="btn btn-text btn-square btn-sm text-error" aria-label="Hapus"
+                                    <button type="button" class="btn btn-soft btn-error btn-square btn-sm text-error" aria-label="Hapus"
                                             @click="$dispatch('open-delete', @js(['action' => route('admin.platforms.destroy', $platform), 'name' => $platform->name]))">
                                         <x-icon name="trash" class="size-4" />
                                     </button>

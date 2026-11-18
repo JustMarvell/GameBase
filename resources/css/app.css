@@ -22,8 +22,8 @@
     --color-accent: oklch(70% 0.23 350);
     /* pink */
     --color-accent-content: oklch(98% 0.01 350);
-    --color-neutral: oklch(26% 0.045 275);
-    --color-neutral-content: oklch(93% 0.012 275);
+    --color-neutral: oklch(88% 0.02 275);
+    --color-neutral-content: oklch(20% 0.04 275);
 
     --color-info: oklch(75% 0.13 230);
     --color-info-content: oklch(20% 0.05 230);

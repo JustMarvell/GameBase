@@ -44,7 +44,7 @@
                             <td>
                                 <div class="flex flex-wrap gap-1">
                                     @forelse ($game->platforms as $platform)
-                                        <span class="badge badge-soft badge-sm">{{ $platform->name }}</span>
+                                        <span class="badge badge-soft badge-primary badge-sm">{{ $platform->name }}</span>
                                     @empty
                                         -
                                     @endforelse
@@ -54,13 +54,13 @@
                             <td>{{ $game->reviews_avg_rating ? number_format($game->reviews_avg_rating, 1) : '-' }}</td>
                             <td>
                                 <div class="flex justify-end gap-1">
-                                    <a href="{{ route('admin.games.media.index', $game) }}" class="btn btn-text btn-square btn-sm" aria-label="Galeri">
+                                    <a href="{{ route('admin.games.media.index', $game) }}" class="btn btn-soft btn-secondary btn-square btn-sm" aria-label="Galeri" title="Kelola galeri">
                                         <x-icon name="photo" class="size-4" />
                                     </a>
-                                    <a href="{{ route('admin.games.edit', $game) }}" class="btn btn-text btn-square btn-sm" aria-label="Edit">
+                                    <a href="{{ route('admin.games.edit', $game) }}" class="btn btn-soft btn-primary btn-square btn-sm" aria-label="Edit" title="Edit data game">
                                         <x-icon name="pencil" class="size-4" />
                                     </a>
-                                    <button type="button" class="btn btn-text btn-square btn-sm text-error" aria-label="Hapus"
+                                    <button type="button" class="btn btn-soft btn-error btn-square btn-sm" aria-label="Hapus" title="Hapus"
                                             @click="$dispatch('open-delete', @js(['action' => route('admin.games.destroy', $game), 'name' => $game->title]))">
                                         <x-icon name="trash" class="size-4" />
                                     </button>

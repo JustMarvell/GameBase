@@ -22,10 +22,10 @@
         </div>
 
         @if ($media->count() > 1)
-            <button @click="go(i - 1)" class="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-white/80" aria-label="Sebelumnya">
+            <button @click="go(i - 1)" class="btn btn-circle btn-primary btn-sm glow absolute left-3 top-1/2 -translate-y-1/2" aria-label="Sebelumnya">
                 <x-icon name="chevron-left" class="size-5" />
             </button>
-            <button @click="go(i + 1)" class="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-white/80" aria-label="Berikutnya">
+            <button @click="go(i + 1)" class="btn btn-circle btn-primary btn-sm glow absolute right-3 top-1/2 -translate-y-1/2" aria-label="Berikutnya">
                 <x-icon name="chevron-right" class="size-5" />
             </button>
         @endif

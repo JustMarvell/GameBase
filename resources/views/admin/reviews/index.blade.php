@@ -30,7 +30,7 @@
                             <td class="whitespace-nowrap text-sm">{{ $review->created_at->format('d M Y') }}</td>
                             <td>
                                 <div class="flex justify-end">
-                                    <button type="button" class="btn btn-text btn-square btn-sm text-error" aria-label="Hapus"
+                                    <button type="button" class="btn btn-soft btn-error btn-square btn-sm text-error" aria-label="Hapus"
                                             @click="$dispatch('open-delete', @js(['action' => route('admin.reviews.destroy', $review), 'name' => 'ulasan dari ' . $review->user->name]))">
                                         <x-icon name="trash" class="size-4" />
                                     </button>

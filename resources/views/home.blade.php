@@ -47,11 +47,11 @@
                 </a>
             @endforeach
 
-            <button @click="prev()" class="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-white/80"
+            <button @click="prev()" class="btn btn-circle btn-primary btn-sm glow absolute left-3 top-1/2 -translate-y-1/2"
                 aria-label="Sebelumnya">
                 <x-icon name="chevron-left" class="size-5" />
             </button>
-            <button @click="next()" class="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-white/80"
+            <button @click="next()" class="btn btn-circle btn-primary btn-sm glow absolute right-3 top-1/2 -translate-y-1/2"
                 aria-label="Berikutnya">
                 <x-icon name="chevron-right" class="size-5" />
             </button>
@@ -86,22 +86,33 @@
         </section>
 
         <aside>
-            <div class="card hero-gradient text-white shadow-lg">
-                <div class="card-body">
-                    <h3 class="flex items-center gap-2 font-bold">
-                        <x-icon name="tag" class="size-5" /> Genre
+            <div class="card sticky top-24 overflow-hidden">
+                <div class="hero-gradient h-1"></div>
+
+                <div class="card-body gap-3 p-5">
+                    <h3 class="flex items-center gap-2 font-display font-bold">
+                        <span class="flex size-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                            <x-icon name="tag" class="size-4" />
+                        </span>
+                        Genre
                     </h3>
-                    <ul class="mt-2 space-y-2">
+
+                    <ul class="space-y-1">
                         @foreach ($genres as $genre)
                             <li>
                                 <a href="{{ route('genres.show', $genre) }}"
-                                    class="flex items-center justify-between rounded-lg bg-white/15 px-3 py-2 text-sm font-semibold hover:bg-white/25">
+                                    class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-primary/10 hover:text-primary">
                                     {{ $genre->name }}
-                                    <span class="badge badge-sm bg-white text-primary">{{ $genre->games_count }}</span>
+                                    <span class="badge badge-soft badge-secondary badge-sm">{{ $genre->games_count }}</span>
                                 </a>
                             </li>
                         @endforeach
                     </ul>
+
+                    <a href="{{ route('games.index') }}"
+                        class="link link-primary inline-flex items-center gap-1 text-sm font-semibold">
+                        Lihat semua game <x-icon name="chevron-right" class="size-4" />
+                    </a>
                 </div>
             </div>
         </aside>

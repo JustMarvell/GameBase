@@ -31,13 +31,13 @@
 
             <div class="flex items-center gap-2">
                 @guest
-                    <a href="{{ route('login') }}" class="btn btn-text btn-sm">Masuk</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline btn-secondary btn-sm">Masuk</a>
                     <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Daftar</a>
                 @endguest
 
                 @auth
                     <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open" class="btn btn-text btn-sm gap-2">
+                        <button @click="open = !open" class="btn btn-soft btn-secondary btn-sm gap-2">
                             <x-icon name="user" class="size-5" /> {{ auth()->user()->name }}
                         </button>
                         <div x-show="open" x-cloak @click.outside="open = false" x-transition
