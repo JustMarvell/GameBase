@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id" data-theme="gamebase">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daftar - {{ config('app.name') }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts._head')
 </head>
-<body class="min-h-screen bg-gradient-to-br from-secondary via-secondary to-primary font-sans antialiased">
+<body class="techno-bg min-h-screen font-sans antialiased">
 <div class="flex min-h-screen items-center justify-center px-4 py-12">
     <div class="w-full max-w-md">
         <div class="mb-8 text-center text-white">
             <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/30">
-                <x-icon name="star" class="size-8" />
+                <x-icon name="gamepad" class="size-8" />
             </div>
             <h1 class="text-2xl font-extrabold tracking-tight">{{ config('app.name') }}</h1>
             <p class="mt-1 text-sm text-white/80">Buat akun baru</p>

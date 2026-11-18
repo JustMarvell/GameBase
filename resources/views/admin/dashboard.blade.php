@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="card bg-linear-to-r from-secondary to-primary text-white shadow-lg">
+    <div class="card hero-gradient text-white shadow-lg">
         <div class="card-body">
             <p class="text-sm text-white/80">Selamat datang kembali,</p>
             <h2 class="text-3xl font-extrabold">{{ auth()->user()->name }} 👋</h2>
@@ -15,7 +15,7 @@
         $cards = [
             ['Total Game', $counts['games'], 'star', 'bg-primary/10 text-primary'],
             ['Total Genre', $counts['genres'], 'tag', 'bg-secondary/15 text-secondary'],
-            ['Total Ulasan', $counts['reviews'], 'newspaper', 'bg-accent/20 text-amber-600'],
+            ['Total Ulasan', $counts['reviews'], 'newspaper', 'bg-accent/20 text-accent'],
             ['Pengguna', $counts['users'], 'user', 'bg-success/15 text-success'],
         ];
     @endphp

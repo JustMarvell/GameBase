@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id" data-theme="gamebase">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Beranda') - {{ config('app.name') }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts._head')
 </head>
 
-<body class="flex min-h-screen flex-col bg-base-200 font-sans antialiased">
+<body class="techno-bg flex min-h-screen flex-col font-sans antialiased">
 
-    <header x-data="{ menu: false }" class="sticky top-0 z-30 bg-base-100 shadow-sm">
-        <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-            <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg font-extrabold text-primary">
-                <x-icon name="star" class="size-6" /> {{ config('app.name') }}
+    <header x-data="{ menu: false }" class="sticky top-0 z-30 border-b border-base-content/10 bg-base-100/80 backdrop-blur">
+        <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
+            <a href="{{ route('home') }}" class="flex items-center gap-2">
+                <span class="hero-gradient glow flex size-9 items-center justify-center rounded-xl text-white">
+                    <x-icon name="gamepad" class="size-5" />
+                </span>
+                <span class="font-display text-xl font-bold tracking-tight">{{ config('app.name') }}</span>
             </a>
 
             <div class="hidden items-center gap-6 text-sm font-semibold md:flex">
-                <a href="{{ route('home') }}" class="hover:text-primary">Beranda</a>
-                <a href="{{ url('/games') }}" class="hover:text-primary">Game</a>
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-primary' : 'hover:text-primary' }}">Beranda</a>
+                <a href="{{ route('games.index') }}" class="{{ request()->routeIs('games.*') ? 'text-primary' : 'hover:text-primary' }}">Game</a>
             </div>
+
+            <form method="GET" action="{{ route('games.index') }}" class="hidden max-w-xs flex-1 md:block">
+                <label class="input input-sm w-full items-center gap-2">
+                    <x-icon name="search" class="size-4 text-base-content/50" />
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari game..." class="grow">
+                </label>
+            </form>
 
             <div class="flex items-center gap-2">
                 @guest
@@ -35,16 +41,16 @@
                             <x-icon name="user" class="size-5" /> {{ auth()->user()->name }}
                         </button>
                         <div x-show="open" x-cloak @click.outside="open = false" x-transition
-                            class="card absolute right-0 mt-2 w-52 shadow-xl ring-1 ring-base-content/10">
+                            class="card absolute right-0 mt-2 w-52 shadow-xl">
                             <ul class="menu w-full">
                                 <li><a href="{{ route('reviews.mine') }}">Ulasan Saya</a></li>
                                 @role('admin')
-                                <li><a href="{{ route('admin.dashboard') }}">Dashboard Admin</a></li>
+                                    <li><a href="{{ route('admin.dashboard') }}">Dashboard Admin</a></li>
                                 @endrole
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button type="submit" class="text-error flex w-full items-center gap-2">
+                                        <button type="submit" class="flex w-full items-center gap-2 text-error">
                                             <x-icon name="logout" class="size-4" /> Keluar
                                         </button>
                                     </form>
@@ -61,10 +67,15 @@
         </nav>
 
         {{-- Menu HP --}}
-        <div x-show="menu" x-cloak x-transition
-            class="space-y-2 border-t border-base-content/10 px-4 py-3 text-sm font-semibold md:hidden">
+        <div x-show="menu" x-cloak x-transition class="space-y-3 border-t border-base-content/10 px-4 py-3 text-sm font-semibold md:hidden">
+            <form method="GET" action="{{ route('games.index') }}">
+                <label class="input w-full items-center gap-2">
+                    <x-icon name="search" class="size-4 text-base-content/50" />
+                    <input type="search" name="q" placeholder="Cari game..." class="grow">
+                </label>
+            </form>
             <a href="{{ route('home') }}" class="block">Beranda</a>
-            <a href="{{ url('/games') }}" class="block">Game</a>
+            <a href="{{ route('games.index') }}" class="block">Game</a>
         </div>
     </header>
 
@@ -80,8 +91,17 @@
         @yield('content')
     </main>
 
-    <footer class="bg-slate-900 py-6 text-center text-sm text-slate-400">
-        © {{ date('Y') }} {{ config('app.name') }}. Dibuat dengan Laravel.
+    <footer class="border-t border-base-content/10 bg-base-100">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-2 font-display font-bold">
+                <span class="hero-gradient flex size-7 items-center justify-center rounded-lg text-white">
+                    <x-icon name="gamepad" class="size-4" />
+                </span>
+                {{ config('app.name') }}
+            </div>
+            <p class="text-base-content/60">Temukan, mainkan, dan ulas game favoritmu.</p>
+            <p class="text-base-content/50">&copy; {{ date('Y') }} {{ config('app.name') }}. Dibuat dengan kopi dan kurang tidur.</p>
+        </div>
     </footer>
 
 </body>

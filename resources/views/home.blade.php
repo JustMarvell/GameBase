@@ -86,7 +86,7 @@
         </section>
 
         <aside>
-            <div class="card bg-linear-to-br from-secondary to-primary text-white shadow-lg">
+            <div class="card hero-gradient text-white shadow-lg">
                 <div class="card-body">
                     <h3 class="flex items-center gap-2 font-bold">
                         <x-icon name="tag" class="size-5" /> Genre
