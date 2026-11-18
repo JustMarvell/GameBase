@@ -8,7 +8,7 @@ Proyek akhir mata kuliah **Framework Programming**, dibuat dengan Laravel 12.
  
 1. Salin proyek dan pasang dependensi:
 ```bash
-git clone [URL repository] game-library
+git clone https://github.com/JustMarvell/GameBase game-library
 cd game-library
 composer install
 npm install
