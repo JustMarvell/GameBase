@@ -12,11 +12,14 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\GameMediaController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserProfileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
 Route::get('/games/{game}', [PublicGameController::class, 'show'])->name('games.show');
 Route::get('/genres/{genre}', [PublicGenreController::class, 'show'])->name('genres.show');
+Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
 
 Route::middleware('auth')->group(function () {
     Route::post('/games/{game}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
@@ -26,6 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-library', [LibraryController::class, 'index'])->name('library.index');
     Route::post('/games/{game}/library', [LibraryController::class, 'store'])->name('library.store');
     Route::delete('/games/{game}/library', [LibraryController::class, 'destroy'])->name('library.destroy');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
 Route::middleware(['auth', 'role:admin'])

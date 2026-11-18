@@ -42,11 +42,13 @@
                 @auth
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="btn btn-soft btn-secondary btn-sm gap-2">
-                            <x-icon name="user" class="size-5" /> {{ auth()->user()->name }}
+                            <x-avatar :user="auth()->user()" size="size-6" text="text-xs" /> {{ auth()->user()->name }}
                         </button>
                         <div x-show="open" x-cloak @click.outside="open = false" x-transition
                             class="card absolute right-0 mt-2 w-52 shadow-xl">
                             <ul class="menu w-full">
+                                <li><a href="{{ route('users.show', auth()->user()) }}">Profil Saya</a></li>
+                                <li><a href="{{ route('profile.edit') }}">Edit Profil</a></li>
                                 <li><a href="{{ route('library.index') }}">Library Saya</a></li>
                                 <li><a href="{{ route('reviews.mine') }}">Ulasan Saya</a></li>
                                 @role('admin')

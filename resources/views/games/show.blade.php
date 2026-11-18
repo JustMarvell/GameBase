@@ -121,7 +121,10 @@
                     <div class="card-body gap-2 p-5">
                         <div class="flex items-center justify-between">
                             <span class="flex items-center gap-2 font-bold">
-                                {{ $review->user->name }}
+                                <a href="{{ route('users.show', $review->user) }}" class="flex items-center gap-2 hover:text-primary">
+                                    <x-avatar :user="$review->user" size="size-8" text="text-xs" />
+                                    {{ $review->user->name }}
+                                </a>
                                 @if ($own)
                                     <span class="badge badge-soft badge-primary badge-sm">Ulasan Anda</span>
                                 @endif

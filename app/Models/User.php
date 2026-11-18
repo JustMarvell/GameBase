@@ -12,14 +12,23 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
-#[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
     protected ?array $libraryIdsCache = null;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'avatar',
+        'bio',
+        'library_public',
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -31,6 +40,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'library_public' => 'boolean',
         ];
     }
     
@@ -53,5 +63,10 @@ class User extends Authenticatable
     public function hasInLibrary(int $gameId): bool
     {
         return in_array($gameId, $this->libraryIds());
+    }
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(fn() => $this->avatar ? asset('storage/' . $this->avatar) : null);
     }
 }
