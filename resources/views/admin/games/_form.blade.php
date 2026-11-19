@@ -116,7 +116,7 @@ $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all()
                     @pointerdown="startDrag($event)" @pointermove="drag($event)" @pointerup="endDrag()"
                     @pointercancel="endDrag()">
                     <img :src="previewSrc" alt="" referrerpolicy="no-referrer" draggable="false" @load="imgLoaded($event)"
-                        @error="imgFailed()" class="block max-h-72 max-w-full">
+                        x-on:error="imgFailed()" class="block max-h-72 max-w-full">
                     <div class="pointer-events-none absolute rounded border-2 border-white" :style="frameStyle"></div>
                 </div>
     
