@@ -177,4 +177,121 @@ Alpine.data('linkPreview', (mode = 'gallery', initial = '') => ({
     },
 }));
 
+// Cover field: upload or link, plus a draggable frame to choose the visible part
+Alpine.data('coverField', (o) => ({
+    mode: o.mode,            // 'upload' | 'link'
+    fileSrc: o.fileSrc,      // existing uploaded cover, or the newly chosen file
+    linkUrl: o.linkUrl,
+    linkSrc: '',
+    linkStatus: 'idle',      // idle | loading | ok | error
+    linkMessage: '',
+    x: o.x,
+    y: o.y,
+    ratio: 0,                // natural width / height of the shown image
+    dragging: false,
+
+    init() {
+        if (this.linkUrl) this.checkLink();
+
+        this.$watch('linkUrl', () => {
+            this.x = 50;
+            this.y = 50;
+            this.checkLink();
+        });
+    },
+
+    get previewSrc() {
+        return this.mode === 'upload' ? this.fileSrc : this.linkSrc;
+    },
+
+    get showEditor() {
+        return !!this.previewSrc && !(this.mode === 'link' && this.linkStatus === 'error');
+    },
+
+    // Size of the cover frame relative to the image (the cover is 3:4 portrait)
+    frameSize() {
+        const a = this.ratio || 0.75;
+        return {
+            fw: a > 0.75 ? 0.75 / a : 1,
+            fh: a < 0.75 ? a / 0.75 : 1,
+        };
+    },
+
+    get frameStyle() {
+        const { fw, fh } = this.frameSize();
+        return `left:${(1 - fw) * this.x}%;top:${(1 - fh) * this.y}%;width:${fw * 100}%;height:${fh * 100}%;box-shadow:0 0 0 9999px rgba(0,0,0,.6);`;
+    },
+
+    onFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.fileSrc = URL.createObjectURL(file);
+            this.x = 50;
+            this.y = 50;
+        }
+    },
+
+    checkLink() {
+        const value = this.linkUrl.trim();
+        this.linkSrc = '';
+        this.linkMessage = '';
+
+        if (!value) {
+            this.linkStatus = 'idle';
+            return;
+        }
+        if (!isHttpUrl(value)) {
+            this.linkStatus = 'error';
+            this.linkMessage = 'Link tidak valid. Harus diawali http:// atau https://';
+            return;
+        }
+        if (youtubeId(value)) {
+            this.linkStatus = 'error';
+            this.linkMessage = 'Cover harus berupa link gambar, bukan video.';
+            return;
+        }
+
+        this.linkStatus = 'loading';
+        this.linkSrc = directImageUrl(value);
+    },
+
+    imgLoaded(event) {
+        const img = event.target;
+        this.ratio = img.naturalWidth / img.naturalHeight;
+        if (this.mode === 'link') this.linkStatus = 'ok';
+    },
+
+    imgFailed() {
+        if (this.mode === 'link') {
+            this.linkStatus = 'error';
+            this.linkMessage = 'Gambar tidak bisa dimuat. Pastikan link langsung ke file gambar dan bisa diakses publik.';
+        }
+    },
+
+    startDrag(event) {
+        this.dragging = true;
+        this.$refs.stage.setPointerCapture(event.pointerId);
+        this.moveTo(event);
+    },
+
+    drag(event) {
+        if (this.dragging) this.moveTo(event);
+    },
+
+    endDrag() {
+        this.dragging = false;
+    },
+
+    // The frame's center follows the pointer
+    moveTo(event) {
+        const rect = this.$refs.stage.getBoundingClientRect();
+        const px = (event.clientX - rect.left) / rect.width;
+        const py = (event.clientY - rect.top) / rect.height;
+        const { fw, fh } = this.frameSize();
+
+        this.x = fw >= 0.999 ? 50 : Math.min(100, Math.max(0, ((px - fw / 2) / (1 - fw)) * 100));
+        this.y = fh >= 0.999 ? 50 : Math.min(100, Math.max(0, ((py - fh / 2) / (1 - fh)) * 100));
+    },
+}));
+
 Alpine.start();

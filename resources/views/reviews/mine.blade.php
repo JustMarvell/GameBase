@@ -20,7 +20,7 @@
                         <div class="card-body gap-3 p-5 sm:flex-row sm:items-center">
                             <a href="{{ route('games.show', $review->game) }}" class="w-16 shrink-0">
                                 @if ($review->game->cover_url)
-                                    <img src="{{ $review->game->cover_url }}" alt="" class="aspect-3/4 w-16 rounded-lg object-cover" referrerpolicy="no-referrer">
+                                    <img src="{{ $review->game->cover_url }}" alt="" class="aspect-3/4 w-16 rounded-lg object-cover" referrerpolicy="no-referrer" style="object-position: {{ $review->game->cover_position }}">
                                 @else
                                     <div class="flex aspect-3/4 w-16 items-center justify-center rounded-lg bg-base-200 text-base-content/30">
                                         <x-icon name="photo" class="size-6" />

@@ -33,17 +33,50 @@ class GameController extends Controller
                 }
             ],
             'description' => ['nullable', 'string'],
+            'cover_focus_x' => ['nullable', 'integer', 'between:0,100'],
+            'cover_focus_y' => ['nullable', 'integer', 'between:0,100'],
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        // Only these columns can be sorted (prevents arbitrary column names in the URL)
+        $sorts = [
+            'title' => 'title',
+            'year' => 'release_year',
+            'rating' => 'reviews_avg_rating',
+            'created' => 'created_at',
+        ];
+        $column = $sorts[$request->sort] ?? 'created_at';
+        $dir = $request->dir === 'asc' ? 'asc' : 'desc';
+
         $games = Game::with(['genre', 'platforms'])
             ->withAvg('reviews', 'rating')
-            ->latest()
-            ->paginate(10);
+            ->withCount('reviews')
+            ->when($request->q, fn($query, $q) => $query->where(
+                fn($w) => $w->where('title', 'like', "%{$q}%")
+                    ->orWhere('developer', 'like', "%{$q}%")
+            ))
+            ->when($request->genre, fn($query, $id) => $query->where('genre_id', $id))
+            ->when($request->platform, fn($query, $id) => $query->whereHas(
+                'platforms',
+                fn($p) => $p->where('platforms.id', $id)
+            ))
+            ->when($request->cover === 'none', fn($query) => $query
+                ->whereNull('cover')->whereNull('cover_link'))
+            ->when($request->cover === 'has', fn($query) => $query->where(
+                fn($w) => $w->whereNotNull('cover')->orWhereNotNull('cover_link')
+            ))
+            ->orderBy($column, $dir)
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString(); // keeps filters when changing pages
 
-        return view('admin.games.index', compact('games'));
+        return view('admin.games.index', [
+            'games' => $games,
+            'genres' => Genre::orderBy('name')->get(),
+            'platforms' => Platform::orderBy('name')->get(),
+        ]);
     }
 
     public function create()
@@ -101,13 +134,15 @@ class GameController extends Controller
 
         $game->delete(); // pivot rows and reviews are removed by cascade
 
-        return redirect()->route('admin.games.index')
-            ->with('success', 'Game berhasil dihapus.');
+        return back()->with('success', 'Game berhasil dihapus.');
     }
 
     /** The selected tab (cover_mode) decides whether the file or the link is used. */
     private function handleCover(Request $request, array $data, ?Game $game = null): array
     {
+        $data['cover_focus_x'] = (int) ($data['cover_focus_x'] ?? 50);
+        $data['cover_focus_y'] = (int) ($data['cover_focus_y'] ?? 50);
+        
         $mode = $request->input('cover_mode');
 
         if ($mode === 'link' && filled($data['cover_link'] ?? null)) {

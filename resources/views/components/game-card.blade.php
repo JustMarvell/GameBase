@@ -8,8 +8,9 @@
         </div>
     
         @if ($game->cover_url)
-            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" loading="lazy" referrerpolicy="no-referrer"
-                onerror="this.remove()"
+            <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" loading="lazy"
+                referrerpolicy="no-referrer" onerror="this.remove()"
+                style="object-position: {{ $game->cover_position }}"
                 class="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105">
         @endif
     

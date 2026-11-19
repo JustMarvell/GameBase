@@ -18,6 +18,8 @@ class Game extends Model
         'cover',
         'description',
         'cover_link',
+        'cover_focus_x',
+        'cover_focus_y',
     ];
 
     public function genre(): BelongsTo
@@ -49,5 +51,12 @@ class Game extends Model
     public function media(): HasMany
     {
         return $this->hasMany(GameMedia::class)->orderBy('position');
+    }
+
+    protected function coverPosition(): Attribute
+    {
+        return Attribute::get(
+            fn() => ($this->cover_focus_x ?? 50) . '% ' . ($this->cover_focus_y ?? 50) . '%'
+        );
     }
 }

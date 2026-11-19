@@ -100,7 +100,7 @@
                                 </div>
                                 @if ($review->game->cover_url)
                                     <img src="{{ $review->game->cover_url }}" alt="" referrerpolicy="no-referrer"
-                                         onerror="this.remove()" class="absolute inset-0 size-full object-cover">
+                                         onerror="this.remove()" class="absolute inset-0 size-full object-cover" style="object-position: {{ $review->game->cover_position }}">
                                 @endif
                             </div>
                         </a>
