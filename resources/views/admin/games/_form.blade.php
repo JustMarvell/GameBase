@@ -14,13 +14,50 @@ $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all()
     </div>
 
     <div class="grid gap-5 md:grid-cols-2">
-        <div>
+    @role('admin')
+        <div class="relative"
+            x-data="developerPicker({
+                name: @js(old('developer', $game->developer ?? '')),
+                developerId: @js(old('developer_id', $game->developer_id ?? '')),
+                url: '{{ route('admin.developers.search') }}',
+            })"
+            @click.outside="open = false">
             <label for="developer" class="label-text font-semibold">Developer</label>
-            <input id="developer" type="text" name="developer" class="input"
-                value="{{ old('developer', $game->developer ?? '') }}" required>
-            @error('developer')
-            <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+            <input id="developer" type="text" name="developer" x-model="name" required autocomplete="off" class="input"
+                placeholder="Ketik nama developer..."
+                @input="onInput()"
+                @keydown.arrow-down.prevent="move(1)"
+                @keydown.arrow-up.prevent="move(-1)"
+                @keydown.enter="onEnter($event)"
+                @keydown.escape="open = false">
+            <input type="hidden" name="developer_id" :value="developerId">
+
+            <ul x-show="open" x-cloak
+                class="menu absolute z-20 mt-1 w-full rounded-xl bg-base-100 p-1 shadow-xl ring-1 ring-base-content/10">
+                <template x-for="(dev, i) in results" :key="dev.id">
+                    <li>
+                        <button type="button" @click="choose(dev)" :class="i === active && 'bg-primary/10'"
+                                class="flex items-center justify-between gap-2">
+                            <span x-text="dev.name"></span>
+                            <span class="badge badge-soft badge-secondary badge-xs">Developer terdaftar</span>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+
+            <p x-show="developerId" x-cloak class="mt-1 text-xs text-success">Terhubung ke akun developer terdaftar.</p>
+            <p x-show="!developerId" class="mt-1 text-xs text-base-content/60">
+                Pilih dari saran untuk menautkan ke akun developer, atau ketik nama sendiri.
+            </p>
+            @error('developer') <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
         </div>
+    @else
+        <div>
+            <label class="label-text font-semibold">Developer</label>
+            <input type="text" value="{{ auth()->user()->name }}" disabled class="input">
+            <p class="mt-1 text-xs text-base-content/60">Game ini otomatis tertaut ke akun Anda.</p>
+        </div>
+    @endrole
 
         <div>
             <label for="release_year" class="label-text font-semibold">Tahun Rilis</label>
@@ -127,7 +164,7 @@ $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all()
     
             <div>
                 <p class="label-text font-semibold">Hasil di situs</p>
-                <div class="mt-2 aspect-[3/4] w-32 overflow-hidden rounded-xl bg-base-300 ring-1 ring-base-content/10">
+                <div class="mt-2 aspect-3/4 w-32 overflow-hidden rounded-xl bg-base-300 ring-1 ring-base-content/10">
                     <img :src="previewSrc" alt="" referrerpolicy="no-referrer" class="size-full object-cover"
                         :style="`object-position: ${x}% ${y}%`">
                 </div>

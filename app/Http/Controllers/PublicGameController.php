@@ -45,7 +45,7 @@ class PublicGameController extends Controller
 
     public function show(Game $game)
     {
-        $game->load(['genre', 'platforms', 'media', 'reviews' => fn($q) => $q->with('user')->latest()]);
+        $game->load(['genre', 'platforms', 'media', 'reviews' => fn($q) => $q->with('user.roles')->latest()]);
         $game->loadAvg('reviews', 'rating');
 
         $related = Game::with('genre')

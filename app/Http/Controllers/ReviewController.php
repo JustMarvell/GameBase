@@ -30,6 +30,10 @@ class ReviewController extends Controller
     {
         $data = $request->validate($this->rules(), $this->messages());
 
+        if ($game->developer_id == $request->user()->id) {
+            return back()->with('error', 'Anda tidak bisa mengulas game buatan sendiri.');
+        }
+
         if ($game->reviews()->where('user_id', $request->user()->id)->exists()) {
             return back()->with('error', 'Anda sudah memberi ulasan untuk game ini.');
         }

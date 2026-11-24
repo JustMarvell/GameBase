@@ -28,6 +28,7 @@ class User extends Authenticatable
         'avatar',
         'bio',
         'library_public',
+        'website',
     ];
 
     /**
@@ -68,5 +69,10 @@ class User extends Authenticatable
     protected function avatarUrl(): Attribute
     {
         return Attribute::get(fn() => $this->avatar ? asset('storage/' . $this->avatar) : null);
+    }
+
+    public function developedGames(): HasMany
+    {
+        return $this->hasMany(Game::class, 'developer_id');
     }
 }

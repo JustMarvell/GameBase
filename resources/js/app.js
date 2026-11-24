@@ -294,4 +294,64 @@ Alpine.data('coverField', (o) => ({
     },
 }));
 
+// Developer name field with suggestions from registered developers (admin game form)
+Alpine.data('developerPicker', (o) => ({
+    name: o.name,
+    developerId: o.developerId,
+    url: o.url,
+    results: [],
+    open: false,
+    active: -1,
+    timer: null,
+
+    onInput() {
+        this.developerId = ''; // typing again removes the link to an account
+        clearTimeout(this.timer);
+
+        const q = this.name.trim();
+        if (!q) {
+            this.results = [];
+            this.open = false;
+            return;
+        }
+
+        this.timer = setTimeout(() => this.search(q), 250);
+    },
+
+    async search(q) {
+        try {
+            const res = await fetch(`${this.url}?q=${encodeURIComponent(q)}`, {
+                headers: { Accept: 'application/json' },
+            });
+            this.results = res.ok ? await res.json() : [];
+        } catch (e) {
+            this.results = [];
+        }
+
+        this.active = -1;
+        this.open = this.results.length > 0;
+    },
+
+    choose(dev) {
+        this.name = dev.name;
+        this.developerId = dev.id;
+        this.open = false;
+    },
+
+    move(step) {
+        if (!this.open) return;
+        const n = this.results.length;
+        this.active = this.active === -1
+            ? (step > 0 ? 0 : n - 1)
+            : (this.active + step + n) % n;
+    },
+
+    onEnter(event) {
+        if (this.open && this.active >= 0) {
+            event.preventDefault();
+            this.choose(this.results[this.active]);
+        }
+    },
+}));
+
 Alpine.start();

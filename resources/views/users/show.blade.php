@@ -17,9 +17,7 @@
                     <div class="pb-1">
                         <h1 class="flex flex-wrap items-center gap-2 text-2xl font-extrabold">
                             {{ $user->name }}
-                            @if ($user->hasRole('admin'))
-                                <span class="badge badge-soft badge-accent badge-sm">Admin</span>
-                            @endif
+                            <x-role-badge :user="$user" />
                         </h1>
                         <p class="text-sm text-base-content/60">Bergabung {{ $user->created_at->translatedFormat('F Y') }}</p>
                     </div>
@@ -29,6 +27,9 @@
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm">
                         <x-icon name="pencil" class="size-4" /> Edit Profil
                     </a>
+                    @if ($isDeveloper)
+                        <a href="{{ route('admin.games.index') }}" class="btn btn-soft btn-secondary btn-sm">Kelola Game</a>
+                    @endif
                 @endif
             </div>
 
@@ -38,52 +39,110 @@
                 <p class="mt-4 text-sm text-base-content/50">Belum ada bio. Tambahkan di "Edit Profil".</p>
             @endif
 
-            <div class="mt-5 grid grid-cols-3 gap-3 text-center">
-                <div class="rounded-xl bg-base-200 p-3">
-                    <p class="text-2xl font-extrabold">{{ $reviews->total() }}</p>
-                    <p class="text-xs text-base-content/60">Ulasan</p>
+            @if ($isDeveloper && ($user->website || $devGenres->isNotEmpty()))
+                <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                    @if ($user->website)
+                        <a href="{{ $user->website }}" target="_blank" rel="noopener nofollow" class="link link-primary inline-flex items-center gap-1">
+                            <x-icon name="globe" class="size-4" /> {{ parse_url($user->website, PHP_URL_HOST) ?: $user->website }}
+                        </a>
+                    @endif
+                    @foreach ($devGenres as $genre)
+                        <a href="{{ route('genres.show', $genre) }}" class="badge badge-soft badge-secondary">{{ $genre->name }}</a>
+                    @endforeach
                 </div>
-                <div class="rounded-xl bg-base-200 p-3">
-                    <p class="text-2xl font-extrabold">{{ $libraryTotal ?? '-' }}</p>
-                    <p class="text-xs text-base-content/60">Game di library</p>
+            @endif
+
+            @if ($isDeveloper)
+                <div class="mt-5 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $devStats['games'] }}</p>
+                        <p class="text-xs text-base-content/60">Game</p>
+                    </div>
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $devStats['reviews'] }}</p>
+                        <p class="text-xs text-base-content/60">Ulasan diterima</p>
+                    </div>
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $devStats['rating'] ? number_format($devStats['rating'], 1) : '-' }}</p>
+                        <p class="text-xs text-base-content/60">Rata-rata rating</p>
+                    </div>
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $devStats['saves'] }}</p>
+                        <p class="text-xs text-base-content/60">Disimpan di library</p>
+                    </div>
                 </div>
-                <div class="rounded-xl bg-base-200 p-3">
-                    <p class="text-2xl font-extrabold">{{ $averageRating ? number_format($averageRating, 1) : '-' }}</p>
-                    <p class="text-xs text-base-content/60">Rata-rata nilai</p>
+            @else
+                <div class="mt-5 grid grid-cols-3 gap-3 text-center">
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $reviews->total() }}</p>
+                        <p class="text-xs text-base-content/60">Ulasan</p>
+                    </div>
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $libraryTotal ?? '-' }}</p>
+                        <p class="text-xs text-base-content/60">Game di library</p>
+                    </div>
+                    <div class="rounded-xl bg-base-200 p-3">
+                        <p class="text-2xl font-extrabold">{{ $averageRating ? number_format($averageRating, 1) : '-' }}</p>
+                        <p class="text-xs text-base-content/60">Rata-rata nilai</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 
-    {{-- ===== LIBRARY ===== --}}
-    <section class="mt-8">
-        <div class="mb-4 flex items-center justify-between">
-            <h2 class="border-l-4 border-primary pl-3 text-xl font-extrabold">Library</h2>
-            @if ($isOwner && $libraryTotal > 12)
-                <a href="{{ route('library.index') }}" class="link link-primary text-sm font-semibold">Lihat semua</a>
-            @endif
-        </div>
+    @if ($isDeveloper)
+        <section class="mt-8">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="border-l-4 border-primary pl-3 text-xl font-extrabold">Game oleh {{ $user->name }}</h2>
+                @if ($isOwner)
+                    <a href="{{ route('admin.games.create') }}" class="btn btn-primary btn-sm">
+                        <x-icon name="plus" class="size-4" /> Tambah Game
+                    </a>
+                @endif
+            </div>
 
-        @if ($libraryGames === null)
-            <div class="card">
-                <div class="card-body items-center py-8 text-center text-base-content/60">
-                    <x-icon name="lock" class="size-8" />
-                    Library pengguna ini bersifat privat.
+            @if ($devGames->isEmpty())
+                <p class="text-base-content/60">Belum ada game.</p>
+            @else
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
+                    @foreach ($devGames as $game)
+                        <x-game-card :game="$game" />
+                    @endforeach
                 </div>
-            </div>
-        @elseif ($libraryGames->isEmpty())
-            <p class="text-base-content/60">Library masih kosong.</p>
-        @else
-            <div class="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
-                @foreach ($libraryGames as $game)
-                    <x-game-card :game="$game" />
-                @endforeach
-            </div>
-            @if (!$isOwner && $libraryTotal > 12)
-                <p class="mt-3 text-sm text-base-content/50">Menampilkan 12 game terbaru dari {{ $libraryTotal }}.</p>
+                <div class="mt-4">{{ $devGames->links() }}</div>
             @endif
-        @endif
-    </section>
+        </section>
+    @else
+        {{-- ===== LIBRARY ===== --}}
+        <section class="mt-8">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="border-l-4 border-primary pl-3 text-xl font-extrabold">Library</h2>
+                @if ($isOwner && $libraryTotal > 12)
+                    <a href="{{ route('library.index') }}" class="link link-primary text-sm font-semibold">Lihat semua</a>
+                @endif
+            </div>
+
+            @if ($libraryGames === null)
+                <div class="card">
+                    <div class="card-body items-center py-8 text-center text-base-content/60">
+                        <x-icon name="lock" class="size-8" />
+                        Library pengguna ini bersifat privat.
+                    </div>
+                </div>
+            @elseif ($libraryGames->isEmpty())
+                <p class="text-base-content/60">Library masih kosong.</p>
+            @else
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
+                    @foreach ($libraryGames as $game)
+                        <x-game-card :game="$game" />
+                    @endforeach
+                </div>
+                @if (!$isOwner && $libraryTotal > 12)
+                    <p class="mt-3 text-sm text-base-content/50">Menampilkan 12 game terbaru dari {{ $libraryTotal }}.</p>
+                @endif
+            @endif
+        </section>
+    @endif
 
     {{-- ===== ULASAN ===== --}}
     <section class="mt-10">

@@ -51,9 +51,13 @@
                                 <li><a href="{{ route('profile.edit') }}">Edit Profil</a></li>
                                 <li><a href="{{ route('library.index') }}">Library Saya</a></li>
                                 <li><a href="{{ route('reviews.mine') }}">Ulasan Saya</a></li>
-                                @role('admin')
-                                    <li><a href="{{ route('admin.dashboard') }}">Dashboard Admin</a></li>
-                                @endrole
+                                @hasanyrole('admin|developer')
+                                    <li>
+                                        <a href="{{ route('admin.dashboard') }}">
+                                            {{ auth()->user()->hasRole('admin') ? 'Dashboard Admin' : 'Panel Developer' }}
+                                        </a>
+                                    </li>
+                                @endhasanyrole
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

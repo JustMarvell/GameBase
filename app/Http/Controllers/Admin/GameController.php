@@ -9,6 +9,7 @@ use App\Models\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Support\MediaLink;
+use App\Models\User;
 
 class GameController extends Controller
 {
@@ -35,6 +36,7 @@ class GameController extends Controller
             'description' => ['nullable', 'string'],
             'cover_focus_x' => ['nullable', 'integer', 'between:0,100'],
             'cover_focus_y' => ['nullable', 'integer', 'between:0,100'],
+            'developer_id' => ['nullable', 'integer'],
         ];
     }
 
@@ -67,6 +69,7 @@ class GameController extends Controller
             ->when($request->cover === 'has', fn($query) => $query->where(
                 fn($w) => $w->whereNotNull('cover')->orWhereNotNull('cover_link')
             ))
+            ->when(!auth()->user()->hasRole('admin'), fn($query) => $query->where('developer_id', auth()->id()))
             ->orderBy($column, $dir)
             ->orderByDesc('id')
             ->paginate(10)
@@ -89,7 +92,7 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->handleCover($request, $request->validate($this->rules()));
+        $data = $this->validated($request);
 
         $game = Game::create(collect($data)->except('platforms')->all());
         $game->platforms()->sync($request->input('platforms', []));
@@ -100,6 +103,7 @@ class GameController extends Controller
 
     public function edit(Game $game)
     {
+        $this->authorizeGame($game);
         $game->load('platforms');
 
         return view('admin.games.edit', [
@@ -111,7 +115,8 @@ class GameController extends Controller
 
     public function update(Request $request, Game $game)
     {
-        $data = $this->handleCover($request, $request->validate($this->rules()), $game);
+        $this->authorizeGame($game);
+        $data = $this->validated($request, $game);
 
         $game->update(collect($data)->except('platforms')->all());
         $game->platforms()->sync($request->input('platforms', []));
@@ -122,6 +127,8 @@ class GameController extends Controller
 
     public function destroy(Game $game)
     {
+        abort_unless(auth()->user()->hasRole('admin'), 403); // only admins delete games
+
         if ($game->cover) {
             Storage::disk('public')->delete($game->cover);
         }
@@ -132,7 +139,7 @@ class GameController extends Controller
             }
         }
 
-        $game->delete(); // pivot rows and reviews are removed by cascade
+        $game->delete();
 
         return back()->with('success', 'Game berhasil dihapus.');
     }
@@ -165,5 +172,40 @@ class GameController extends Controller
         if ($game?->cover) {
             Storage::disk('public')->delete($game->cover);
         }
+    }
+
+    private function authorizeGame(Game $game): void
+    {
+        abort_unless($game->isManagedBy(auth()->user()), 403);
+    }
+
+    /** Validates the request and decides the developer link (admin: chosen one, developer: themselves). */
+    private function validated(Request $request, ?Game $game = null): array
+    {
+        $user = $request->user();
+        $isAdmin = $user->hasRole('admin');
+
+        $rules = $this->rules();
+        if (!$isAdmin) {
+            unset($rules['developer'], $rules['developer_id']);
+        }
+
+        $data = $this->handleCover($request, $request->validate($rules), $game);
+
+        if (!$isAdmin) {
+            $data['developer_id'] = $user->id;   // a developer always owns their games
+            $data['developer'] = $user->name;
+        } else {
+            $developer = filled($data['developer_id'] ?? null)
+                ? User::role('developer')->find($data['developer_id'])
+                : null;
+
+            $data['developer_id'] = $developer?->id;
+            if ($developer) {
+                $data['developer'] = $developer->name;
+            }
+        }
+
+        return $data;
     }
 }

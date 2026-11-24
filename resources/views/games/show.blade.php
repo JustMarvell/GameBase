@@ -65,7 +65,15 @@
 
                 <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
                     <dt class="text-base-content/60">Developer</dt>
-                    <dd class="font-semibold">{{ $game->developer }}</dd>
+                    <dd class="font-semibold">
+                        @if ($game->developer_id)
+                            <a href="{{ route('users.show', $game->developer_id) }}" class="link link-primary inline-flex items-center gap-1">
+                                {{ $game->developer }} <x-icon name="chevron-right" class="size-4" />
+                            </a>
+                        @else
+                            {{ $game->developer }}
+                        @endif
+                    </dd>
 
                     <dt class="text-base-content/60">Tahun rilis</dt>
                     <dd class="font-semibold">{{ $game->release_year }}</dd>
@@ -92,7 +100,7 @@
         <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Ulasan</h2>
 
         @auth
-            @if (!$myReview)
+            @if (!$myReview && auth()->id() != $game->developer_id)
                 <div class="card mb-6">
                     <div class="card-body p-5">
                         <h3 class="font-bold">Tulis ulasan</h3>
@@ -125,6 +133,7 @@
                                     <x-avatar :user="$review->user" size="size-8" text="text-xs" />
                                     {{ $review->user->name }}
                                 </a>
+                                <x-role-badge :user="$review->user" />
                                 @if ($own)
                                     <span class="badge badge-soft badge-primary badge-sm">Ulasan Anda</span>
                                 @endif

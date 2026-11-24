@@ -21,25 +21,31 @@
                     <span class="text-lg font-extrabold text-white">{{ config('app.name') }}</span>
                 </div>
             @php
-$menus = [
-    ['admin.dashboard', 'Dashboard', 'dashboard'],
-    ['admin.games.index', 'Game', 'star'],
-    ['admin.genres.index', 'Genre', 'tag'],
-    ['admin.platforms.index', 'Platform', 'globe'],
-    ['admin.reviews.index', 'Ulasan', 'newspaper'],
-];
+    $menus = [
+        ['admin.dashboard', 'Dashboard', 'dashboard'],
+        ['admin.games.index', 'Game', 'star'],
+    ];
+
+    if (auth()->user()->hasRole('admin')) {
+        $menus = array_merge($menus, [
+            ['admin.genres.index', 'Genre', 'tag'],
+            ['admin.platforms.index', 'Platform', 'globe'],
+            ['admin.reviews.index', 'Ulasan', 'newspaper'],
+            ['admin.users.index', 'Pengguna', 'user'],
+        ]);
+    }
             @endphp
             {{-- Komponen "menu" FlyonUI --}}
             <ul class="menu w-full flex-1 gap-1 px-3 py-6">
                 <li class="menu-title text-xs tracking-wider text-slate-500 uppercase">Menu</li>
                 @foreach ($menus as [$route, $label, $icon])
-                            @php $active = request()->routeIs(str_replace('.index', '.*', $route)); @endphp
-                            <li>
-                                <a href="{{ route($route) }}" class="{{ $active ? 'bg-secondary text-secondary-content shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
-                                    <x-icon :name="$icon" class="size-5" />
-                                    {{ $label }}
-                                </a>
-                            </li>
+                    @php $active = request()->routeIs(str_replace('.index', '.*', $route)); @endphp
+                    <li>
+                        <a href="{{ route($route) }}" class="{{ $active ? 'bg-secondary text-secondary-content shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <x-icon :name="$icon" class="size-5" />
+                            {{ $label }}
+                        </a>
+                    </li>
                 @endforeach
                 <li class="menu-title mt-4 text-xs tracking-wider text-slate-500 uppercase">Website</li>
                 <li>

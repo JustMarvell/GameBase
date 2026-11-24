@@ -63,6 +63,17 @@
                     @error('bio') <p class="text-sm text-error">{{ $message }}</p> @enderror
                 </div>
 
+                @role('developer')
+                <div>
+                    <label for="website" class="label-text font-semibold">Website (opsional)</label>
+                    <input id="website" type="url" name="website" value="{{ old('website', $user->website) }}" placeholder="https://..."
+                        class="input">
+                    @error('website')
+                    <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+                </div>
+                @endrole
+
+                @unless ($user->hasRole('developer'))
                 <label class="flex items-center justify-between gap-4 rounded-xl border border-base-content/10 p-4">
                     <span>
                         <span class="block font-semibold">Tampilkan library di profil publik</span>
@@ -71,6 +82,7 @@
                     <input type="checkbox" name="library_public" value="1" class="switch switch-primary"
                            @checked(old('library_public', $user->library_public))>
                 </label>
+                @endunless
 
                 <div class="flex justify-end gap-2">
                     <a href="{{ route('users.show', $user) }}" class="btn btn-text">Batal</a>

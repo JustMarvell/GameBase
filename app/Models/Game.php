@@ -20,6 +20,7 @@ class Game extends Model
         'cover_link',
         'cover_focus_x',
         'cover_focus_y',
+        'developer_id',
     ];
 
     public function genre(): BelongsTo
@@ -58,5 +59,11 @@ class Game extends Model
         return Attribute::get(
             fn() => ($this->cover_focus_x ?? 50) . '% ' . ($this->cover_focus_y ?? 50) . '%'
         );
+    }
+
+    /** Admins manage every game; a developer only manages their own. */
+    public function isManagedBy(User $user): bool
+    {
+        return $user->hasRole('admin') || ($this->developer_id !== null && (int) $this->developer_id === $user->id);
     }
 }

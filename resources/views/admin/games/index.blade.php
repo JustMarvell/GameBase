@@ -104,10 +104,12 @@
                                                 <a href="{{ route('admin.games.edit', $game) }}" class="btn btn-soft btn-primary btn-square btn-sm" aria-label="Edit" title="Edit data game">
                                                     <x-icon name="pencil" class="size-4" />
                                                 </a>
-                                                <button type="button" class="btn btn-soft btn-error btn-square btn-sm" aria-label="Hapus" title="Hapus"
-                                                        @click="$dispatch('open-delete', @js(['action' => route('admin.games.destroy', $game), 'name' => $game->title]))">
-                                                    <x-icon name="trash" class="size-4" />
-                                                </button>
+                                                @role('admin')
+                                                    <button type="button" class="btn btn-soft btn-error btn-square btn-sm" aria-label="Hapus" title="Hapus"
+                                                            @click="$dispatch('open-delete', @js(['action' => route('admin.games.destroy', $game), 'name' => $game->title]))">
+                                                        <x-icon name="trash" class="size-4" />
+                                                    </button>
+                                                @endrole
                                             </div>
                                         </td>
                                     </tr>

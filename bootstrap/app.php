@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         // Admin yang sudah login lalu membuka /login diarahkan ke dashboard admin
         $middleware->redirectUsersTo(
-            fn() => auth()->user()->hasRole('admin') ? '/admin/dashboard' : '/'
+            fn() => auth()->user()->hasAnyRole(['admin', 'developer']) ? '/admin/dashboard' : '/'
         );
     })
     ->withExceptions(function (Exceptions $exceptions): void {

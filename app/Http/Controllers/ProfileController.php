@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Game;
 
 class ProfileController extends Controller
 {
@@ -17,13 +18,20 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = $request->user();
+        $isDeveloper = $user->hasRole('developer');
 
-        $data = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'bio' => ['nullable', 'string', 'max:300'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-        ]);
+        ];
+
+        if ($isDeveloper) {
+            $rules['website'] = ['nullable', 'url:http,https', 'max:255'];
+        }
+
+        $data = $request->validate($rules);
 
         // The avatar is handled separately, so an empty file input never wipes the current photo
         unset($data['avatar']);
@@ -36,9 +44,16 @@ class ProfileController extends Controller
             $data['avatar'] = null;
         }
 
-        $data['library_public'] = $request->boolean('library_public');
+        if (!$isDeveloper) {
+            $data['library_public'] = $request->boolean('library_public');
+        }
 
         $user->update($data);
+
+        // Keep the developer name on their games in sync
+        if ($isDeveloper && $user->wasChanged('name')) {
+            Game::where('developer_id', $user->id)->update(['developer' => $user->name]);
+        }
 
         return redirect()->route('users.show', $user)
             ->with('success', 'Profil berhasil diperbarui.');

@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\GameMediaController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
@@ -34,19 +35,29 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
-Route::middleware(['auth', 'role:admin'])
+// Panel: admin and developer
+Route::middleware(['auth', 'role:admin|developer'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::resource('genres', GenreController::class)->except('show');
-        Route::resource('platforms', PlatformController::class)->except('show');
+
         Route::resource('games', GameController::class)->except('show');
-        Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
         Route::get('games/{game}/media', [GameMediaController::class, 'index'])->name('games.media.index');
         Route::post('games/{game}/media', [GameMediaController::class, 'store'])->name('games.media.store');
+        Route::post('games/{game}/media/link', [GameMediaController::class, 'storeLink'])->name('games.media.link');
         Route::post('games/{game}/media/reorder', [GameMediaController::class, 'reorder'])->name('games.media.reorder');
         Route::delete('media/{media}', [GameMediaController::class, 'destroy'])->name('media.destroy');
-        Route::post('games/{game}/media/link', [GameMediaController::class, 'storeLink'])->name('games.media.link');
+
+        // Admin only
+        Route::middleware('role:admin')->group(function () {
+            Route::resource('genres', GenreController::class)->except('show');
+            Route::resource('platforms', PlatformController::class)->except('show');
+            Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
+
+            Route::get('developers/search', [AdminUserController::class, 'searchDevelopers'])->name('developers.search');
+            Route::resource('users', AdminUserController::class)->only(['index', 'create', 'store']);
+            Route::put('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
+        });
     });
     

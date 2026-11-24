@@ -8,7 +8,7 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        if ($request->user()->hasRole('admin')) {
+        if ($request->user()->hasAnyRole(['admin', 'developer'])) {
             return redirect()->route('admin.dashboard');
         }
 

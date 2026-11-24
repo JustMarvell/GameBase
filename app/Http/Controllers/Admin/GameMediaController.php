@@ -16,6 +16,8 @@ class GameMediaController extends Controller
 
     public function index(Game $game)
     {
+        $this->authorizeGame($game);
+
         $game->load('media');
 
         return view('admin.games.media', compact('game'));
@@ -23,6 +25,8 @@ class GameMediaController extends Controller
 
     public function store(Request $request, Game $game)
     {
+        $this->authorizeGame($game);
+
         $request->validate([
             'files' => ['required', 'array', 'max:20'],
             'files.*' => [
@@ -66,6 +70,8 @@ class GameMediaController extends Controller
 
     public function reorder(Request $request, Game $game)
     {
+        $this->authorizeGame($game);
+
         $order = $request->validate([
             'order' => ['required', 'array'],
             'order.*' => ['integer'],
@@ -80,6 +86,8 @@ class GameMediaController extends Controller
 
     public function destroy(GameMedia $media)
     {
+        $this->authorizeGame($media->game);
+        
         Storage::disk('public')->delete($media->path);
         if ($media->path) {
             Storage::disk('public')->delete($media->path);
@@ -91,6 +99,8 @@ class GameMediaController extends Controller
 
     public function storeLink(Request $request, Game $game)
     {
+        $this->authorizeGame($game);
+
         $data = $request->validate([
             'link' => ['required', 'url:http,https', 'max:2048'],
         ], [
@@ -111,5 +121,10 @@ class GameMediaController extends Controller
         ]);
 
         return back()->with('success', $youtubeId ? 'Video YouTube berhasil ditambahkan.' : 'Link gambar berhasil ditambahkan.');
+    }
+
+    private function authorizeGame(Game $game): void
+    {
+        abort_unless($game->isManagedBy(auth()->user()), 403);
     }
 }
