@@ -9,7 +9,12 @@
 
                 <div class="mb-6 flex items-center justify-between">
                     <p class="text-base-content/60">Kelola data game.</p>
-                        <form method="GET" action="{{ route('admin.games.index') }}" class="card mb-6">
+                    <a href="{{ route('admin.games.create') }}" class="btn btn-primary">
+                        <x-icon name="plus" class="size-5" /> Tambah Game
+                    </a>
+                </div>
+
+                <form method="GET" action="{{ route('admin.games.index') }}" class="card mb-6">
                         <div class="card-body grid gap-3 p-4 md:grid-cols-6">
                             {{-- keep the current sorting when searching --}}
                             @if (request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
@@ -45,11 +50,7 @@
                                 <button type="submit" class="btn btn-primary">Cari</button>
                             </div>
                         </div>
-                    </form>
-                    <a href="{{ route('admin.games.create') }}" class="btn btn-primary">
-                        <x-icon name="plus" class="size-5" /> Tambah Game
-                    </a>
-                </div>
+                </form>
 
                 <div class="card">
                     <div class="overflow-x-auto">

@@ -114,3 +114,15 @@ a.card:hover,
     background-size: auto, 32px 32px, 32px 32px;
     background-attachment: fixed;
 }
+
+/* Admin tables: quiet uppercase headers, subtle row hover */
+.table thead th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: oklch(100% 0 0 / 0.5);
+}
+
+.table tbody tr:hover {
+    background: oklch(100% 0 0 / 0.03);
+}

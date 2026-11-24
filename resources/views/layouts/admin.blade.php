@@ -13,7 +13,7 @@
         <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" x-transition.opacity
             class="fixed inset-0 z-30 bg-black/50 lg:hidden"></div>
         {{-- ================= SIDEBAR ================= --}}
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-slate-900 text-slate-300 transition-transform duration-200 lg:static lg:translate-x-0">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-base-content/10 bg-base-100 text-base-content/70 transition-transform duration-200 lg:static lg:translate-x-0">
             <div class="flex h-16 items-center gap-3 border-b border-white/10 px-6">
                 <div class="hero-gradient flex size-9 items-center justify-center rounded-lg text-white">
                     <x-icon name="gamepad" class="size-5" />
@@ -21,35 +21,37 @@
                     <span class="text-lg font-extrabold text-white">{{ config('app.name') }}</span>
                 </div>
             @php
-    $menus = [
-        ['admin.dashboard', 'Dashboard', 'dashboard'],
-        ['admin.games.index', 'Game', 'star'],
-    ];
+$menus = [
+    ['admin.dashboard', 'Dashboard', 'dashboard'],
+    ['admin.games.index', 'Game', 'star'],
+];
 
-    if (auth()->user()->hasRole('admin')) {
-        $menus = array_merge($menus, [
-            ['admin.genres.index', 'Genre', 'tag'],
-            ['admin.platforms.index', 'Platform', 'globe'],
-            ['admin.reviews.index', 'Ulasan', 'newspaper'],
-            ['admin.users.index', 'Pengguna', 'user'],
-        ]);
-    }
+if (auth()->user()->hasRole('admin')) {
+    $menus = array_merge($menus, [
+        ['admin.genres.index', 'Genre', 'tag'],
+        ['admin.platforms.index', 'Platform', 'globe'],
+        ['admin.reviews.index', 'Ulasan', 'newspaper'],
+        ['admin.users.index', 'Pengguna', 'user'],
+    ]);
+}
             @endphp
             {{-- Komponen "menu" FlyonUI --}}
             <ul class="menu w-full flex-1 gap-1 px-3 py-6">
-                <li class="menu-title text-xs tracking-wider text-slate-500 uppercase">Menu</li>
+                <li class="menu-title text-xs uppercase tracking-wider text-base-content/40">Menu</li>
                 @foreach ($menus as [$route, $label, $icon])
                     @php $active = request()->routeIs(str_replace('.index', '.*', $route)); @endphp
                     <li>
-                        <a href="{{ route($route) }}" class="{{ $active ? 'bg-secondary text-secondary-content shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <a href="{{ route($route) }}"
+                            class="{{ $active ? 'bg-primary/15 text-primary' : 'text-base-content/70 hover:bg-base-300/60 hover:text-base-content' }}">
                             <x-icon :name="$icon" class="size-5" />
                             {{ $label }}
                         </a>
                     </li>
                 @endforeach
-                <li class="menu-title mt-4 text-xs tracking-wider text-slate-500 uppercase">Website</li>
+                <li class="menu-title mt-4 text-xs uppercase tracking-wider text-base-content/40">Website</li>
                 <li>
-                    <a href="{{ url('/') }}" target="_blank" class="text-slate-300 hover:bg-white/10 hover:text-white">
+                    <a href="{{ url('/') }}" target="_blank"
+                        class="text-base-content/70 hover:bg-base-300/60 hover:text-base-content">
                         <x-icon name="globe" class="size-5" />
                         Lihat Website
                     </a>
@@ -59,7 +61,7 @@
         {{-- ================= KONTEN ================= --}}
         <div class="flex min-w-0 flex-1 flex-col">
             {{-- Topbar (komponen "navbar" FlyonUI) --}}
-            <header class="navbar sticky top-0 z-20 h-16 border-b border-base-content/10 bg-base-100 px-4 lg:px-8">
+            <header class="navbar sticky top-0 z-20 h-16 border-b border-base-content/10 bg-base-200/80 px-4 backdrop-blur-md lg:px-8">
                 <div class="navbar-start items-center gap-3">
                     <button @click="sidebarOpen = true" class="btn btn-text btn-square lg:hidden"
                         aria-label="Buka menu">
@@ -72,7 +74,7 @@
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="btn btn-text gap-2 px-2">
                             <span class="avatar avatar-placeholder">
-                                <span class="bg-secondary/15 text-secondary size-8 rounded-full text-sm font-bold">
+                                <span class="bg-primary/15 text-primary size-8 rounded-full text-sm font-bold">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                 </span>
                             </span>
