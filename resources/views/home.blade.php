@@ -13,11 +13,11 @@
                         next() { this.i = (this.i + 1) % this.n },
                         prev() { this.i = (this.i - 1 + this.n) % this.n },
                      }" x-init="start()" @mouseenter="stop()" @mouseleave="start()"
-            class="relative h-72 overflow-hidden rounded-2xl bg-slate-900 shadow-lg md:h-96">
+            class="relative h-72 overflow-hidden rounded-xl border border-base-content/10 bg-base-100 shadow-lg md:h-96">
 
             @foreach ($slides as $k => $game)
-                <a href="{{ route('games.show', $game) }}" x-show="i === {{ $k }}" x-transition.opacity.duration.500ms @if ($k > 0)
-                x-cloak @endif class="absolute inset-0 block">
+            <a href="{{ route('games.show', $game) }}" x-show="i === {{ $k }}" x-transition.opacity.duration.500ms
+                @if ($k > 0) x-cloak @endif class="absolute inset-0 block">
 
                     @if ($game->cover_url)
                         <img src="{{ $game->cover_url }}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"
@@ -29,7 +29,7 @@
 
                     <div class="relative flex h-full items-end justify-between gap-6 p-6 md:p-10">
                         <div class="max-w-xl text-white">
-                            <span class="badge badge-accent">{{ $game->genre->name }}</span>
+                            <span class="badge border-0 bg-base-200/80 text-secondary backdrop-blur">{{ $game->genre->name }}</span>
                             @auth
                                 @if (auth()->user()->hasInLibrary($game->id))
                                     <span class="badge badge-success ml-1 gap-1">
@@ -48,17 +48,17 @@
 
                         @if ($game->cover_url)
                             <img src="{{ $game->cover_url }}" alt="{{ $game->title }}" referrerpolicy="no-referrer" onerror="this.remove()"
-                                class="hidden h-56 rounded-xl object-cover shadow-2xl ring-2 ring-white/30 md:block">
+                                class="hidden h-56 rounded-lg object-cover shadow-2xl ring-1 ring-white/20 md:block">
                         @endif
                     </div>
                 </a>
             @endforeach
 
-            <button @click="prev()" class="btn btn-circle btn-primary btn-sm glow absolute left-3 top-1/2 -translate-y-1/2"
+            <button @click="prev()" class="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 border-0 bg-base-200/70 text-base-content backdrop-blur hover:bg-primary hover:text-primary-content"
                 aria-label="Sebelumnya">
                 <x-icon name="chevron-left" class="size-5" />
             </button>
-            <button @click="next()" class="btn btn-circle btn-primary btn-sm glow absolute right-3 top-1/2 -translate-y-1/2"
+            <button @click="next()" class="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-base-200/70 text-base-content backdrop-blur hover:bg-primary hover:text-primary-content"
                 aria-label="Berikutnya">
                 <x-icon name="chevron-right" class="size-5" />
             </button>
@@ -66,7 +66,7 @@
             <div class="absolute right-4 top-4 flex gap-1.5">
                 @foreach ($slides as $k => $game)
                     <button @click="i = {{ $k }}" aria-label="Slide {{ $k + 1 }}"
-                        :class="i === {{ $k }} ? 'w-6 bg-accent' : 'w-2 bg-white/60'"
+                        :class="i === {{ $k }} ? 'w-6 bg-primary' : 'w-2 bg-white/40'"
                         class="h-2 rounded-full transition-all"></button>
                 @endforeach
             </div>

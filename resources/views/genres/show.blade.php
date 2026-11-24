@@ -3,15 +3,21 @@
 @section('title', $genre->name)
 
 @section('content')
-    <div class="mb-6">
-        <h1 class="border-l-4 border-primary pl-3 text-2xl font-extrabold">Genre: {{ $genre->name }}</h1>
+    <div class="mb-6 border-b border-base-content/10 pb-4">
+        <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Genre</p>
+        <h1 class="mt-1 text-3xl font-extrabold">{{ $genre->name }}</h1>
         @if ($genre->description)
-            <p class="mt-2 text-base-content/70">{{ $genre->description }}</p>
+            <p class="mt-2 max-w-2xl text-base-content/70">{{ $genre->description }}</p>
         @endif
+        <p class="mt-2 text-sm text-base-content/50">{{ $games->total() }} game</p>
     </div>
 
     @if ($games->isEmpty())
-        <p class="py-12 text-center text-base-content/60">Belum ada game di genre ini.</p>
+        <div class="card">
+            <div class="card-body items-center py-12 text-center text-base-content/60">
+                Belum ada game di genre ini.
+            </div>
+        </div>
     @else
         <div class="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
             @foreach ($games as $game)

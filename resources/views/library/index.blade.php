@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6 flex items-end justify-between gap-4">
         <h1 class="border-l-4 border-primary pl-3 text-2xl font-extrabold">Library Saya</h1>
-        <span class="text-sm text-base-content/60">{{ $games->total() }} game</span>
+        <span class="badge badge-soft badge-secondary">{{ $games->total() }} game</span>
     </div>
 
     @if ($games->isEmpty())
@@ -25,7 +25,7 @@
                     <form method="POST" action="{{ route('library.destroy', $game) }}">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-soft btn-error btn-sm btn-block">
+                        <button type="submit" class="btn btn-text btn-sm btn-block text-base-content/60 hover:bg-error/10 hover:text-error">
                             <x-icon name="trash" class="size-4" /> Hapus
                         </button>
                     </form>

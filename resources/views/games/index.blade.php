@@ -3,11 +3,17 @@
 @section('title', 'Semua Game')
 
 @section('content')
-    <h1 class="mb-4 border-l-4 border-primary pl-3 text-2xl font-extrabold">Semua Game</h1>
+    <div class="mb-4 flex items-end justify-between gap-4">
+        <h1 class="border-l-4 border-primary pl-3 text-2xl font-extrabold">Semua Game</h1>
+        <span class="text-sm text-base-content/60">{{ $games->total() }} game</span>
+    </div>
 
     <form method="GET" action="{{ route('games.index') }}" class="card mb-6">
         <div class="card-body grid gap-3 p-4 md:grid-cols-5">
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari judul / developer..." class="input md:col-span-2">
+            <label class="input items-center gap-2 md:col-span-2">
+                <x-icon name="search" class="size-4 text-base-content/50" />
+                <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari judul / developer..." class="grow">
+            </label>
 
             <select name="genre" class="select">
                 <option value="">Semua genre</option>
@@ -40,7 +46,12 @@
     </form>
 
     @if ($games->isEmpty())
-        <p class="py-12 text-center text-base-content/60">Tidak ada game yang cocok.</p>
+        <div class="card">
+            <div class="card-body items-center gap-2 py-12 text-center text-base-content/60">
+                <x-icon name="search" class="size-8 text-base-content/30" />
+                Tidak ada game yang cocok.
+            </div>
+        </div>
     @else
         <div class="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
             @foreach ($games as $game)
