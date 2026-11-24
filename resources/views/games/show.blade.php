@@ -23,7 +23,7 @@
         @endif
 
             <div class="flex-1">
-                <a href="{{ route('genres.show', $game->genre) }}" class="badge badge-secondary">{{ $game->genre->name }}</a>
+                <a href="{{ route('genres.show', $game->genre) }}" class="badge badge-soft badge-secondary">{{ $game->genre->name }}</a>
                 <h1 class="mt-2 text-3xl font-extrabold">{{ $game->title }}</h1>
 
                 <div class="mt-3 flex items-center gap-2">
@@ -63,7 +63,7 @@
                     @endguest
                 </div>
 
-                <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+                <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-lg border border-base-content/10 bg-base-200/50 p-4 text-sm">
                     <dt class="text-base-content/60">Developer</dt>
                     <dd class="font-semibold">
                         @if ($game->developer_id)
@@ -138,8 +138,8 @@
                                     <span class="badge badge-soft badge-primary badge-sm">Ulasan Anda</span>
                                 @endif
                             </span>
-                            <span class="flex items-center gap-1 font-bold">
-                                <x-icon name="star" class="size-5 fill-amber-400 text-amber-400" />
+                            <span class="badge badge-soft badge-warning gap-1 font-bold">
+                                <x-icon name="star" class="size-4 fill-current" />
                                 {{ $review->rating }}/10
                             </span>
                         </div>

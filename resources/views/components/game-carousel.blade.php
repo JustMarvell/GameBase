@@ -2,7 +2,7 @@
 
 <div x-data="gameCarousel({{ $media->count() }})"
      @mouseenter="hovering = true" @mouseleave="hovering = false"
-     class="overflow-hidden rounded-2xl bg-black shadow-lg">
+     class="overflow-hidden rounded-xl border border-base-content/10 bg-black shadow-lg">
 
     <div class="relative">
         <div x-ref="slides" class="relative aspect-video w-full">
@@ -28,10 +28,10 @@
         </div>
 
         @if ($media->count() > 1)
-            <button @click="go(i - 1)" class="btn btn-circle btn-primary btn-sm glow absolute left-3 top-1/2 -translate-y-1/2" aria-label="Sebelumnya">
+            <button @click="go(i - 1)" class="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 border-0 bg-base-200/70 text-base-content backdrop-blur hover:bg-primary hover:text-primary-content" aria-label="Sebelumnya">
                 <x-icon name="chevron-left" class="size-5" />
             </button>
-            <button @click="go(i + 1)" class="btn btn-circle btn-primary btn-sm glow absolute right-3 top-1/2 -translate-y-1/2" aria-label="Berikutnya">
+            <button @click="go(i + 1)" class="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-base-200/70 text-base-content backdrop-blur hover:bg-primary hover:text-primary-content" aria-label="Berikutnya">
                 <x-icon name="chevron-right" class="size-5" />
             </button>
         @endif
@@ -41,7 +41,7 @@
         <div class="flex items-center justify-center gap-2 py-3">
             @foreach ($media as $k => $item)
                 <button @click="go({{ $k }})" aria-label="Slide {{ $k + 1 }}"
-                        :class="i === {{ $k }} ? 'w-6 bg-accent' : 'w-2 bg-white/50'"
+                        :class="i === {{ $k }} ? 'w-6 bg-primary' : 'w-2 bg-white/40'"
                         class="h-2 rounded-full transition-all"></button>
             @endforeach
         </div>

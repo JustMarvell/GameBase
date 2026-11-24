@@ -5,7 +5,7 @@
 
     @for ($n = 1; $n <= 10; $n++)
         <button type="button" @click="rating = {{ $n }}" @mouseenter="hover = {{ $n }}" @mouseleave="hover = 0"
-            :class="(hover || rating) >= {{ $n }} ? 'text-amber-400' : 'text-base-content/20'" class="transition"
+            :class="(hover || rating) >= {{ $n }} ? 'text-amber-400' : 'text-base-content/20'" class="rounded transition hover:scale-110"
             aria-label="Beri nilai {{ $n }}">
             <x-icon name="star" class="size-6 fill-current" />
         </button>
