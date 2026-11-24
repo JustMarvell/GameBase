@@ -7,15 +7,15 @@
 <body class="techno-bg min-h-screen font-sans antialiased">
 <div class="flex min-h-screen items-center justify-center px-4 py-12">
     <div class="w-full max-w-md">
-        <div class="mb-8 text-center text-white">
-            <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/30">
+        <div class="mb-8 text-center">
+            <div class="hero-gradient glow mx-auto mb-4 flex size-14 items-center justify-center rounded-xl text-white">
                 <x-icon name="gamepad" class="size-8" />
             </div>
             <h1 class="text-2xl font-extrabold tracking-tight">{{ config('app.name') }}</h1>
-            <p class="mt-1 text-sm text-white/80">Buat akun baru</p>
+            <p class="mt-1 text-sm text-base-content/60">Buat akun baru</p>
         </div>
 
-        <div class="card shadow-2xl">
+        <div class="card bg-base-100/90 shadow-2xl backdrop-blur">
             <div class="card-body gap-5 p-8">
                 <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block btn-lg">Daftar</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg glow">Daftar</button>
                 </form>
 
                 <p class="text-center text-sm">
