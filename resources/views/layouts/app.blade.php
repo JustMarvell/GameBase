@@ -8,7 +8,7 @@
 
 <body class="techno-bg flex min-h-screen flex-col font-sans antialiased">
 
-    <header x-data="{ menu: false }" class="sticky top-0 z-30 border-b border-base-content/10 bg-base-100/80 backdrop-blur">
+    <header x-data="{ menu: false }" class="sticky top-0 z-30 border-b border-base-content/10 bg-base-200/80 backdrop-blur-md">
         <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
             <a href="{{ route('home') }}" class="flex items-center gap-2">
                 <span class="hero-gradient glow flex size-9 items-center justify-center rounded-xl text-white">
@@ -17,12 +17,17 @@
                 <span class="font-display text-xl font-bold tracking-tight">{{ config('app.name') }}</span>
             </a>
 
+            @php
+                $navLink = fn ($active) => 'relative py-5 transition-colors ' . ($active
+                    ? 'text-primary after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary'
+                    : 'text-base-content/70 hover:text-base-content');
+            @endphp
+
             <div class="hidden items-center gap-6 text-sm font-semibold md:flex">
-                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-primary' : 'hover:text-primary' }}">Beranda</a>
-                <a href="{{ route('games.index') }}" class="{{ request()->routeIs('games.*') ? 'text-primary' : 'hover:text-primary' }}">Game</a>
+                <a href="{{ route('home') }}" class="{{ $navLink(request()->routeIs('home')) }}">Beranda</a>
+                <a href="{{ route('games.index') }}" class="{{ $navLink(request()->routeIs('games.*')) }}">Game</a>
                 @auth
-                    <a href="{{ route('library.index') }}"
-                        class="{{ request()->routeIs('library.*') ? 'text-primary' : 'hover:text-primary' }}">Library Saya</a>
+                    <a href="{{ route('library.index') }}" class="{{ $navLink(request()->routeIs('library.*')) }}">Library Saya</a>
                 @endauth
             </div>
 
@@ -85,10 +90,10 @@
                     <input type="search" name="q" placeholder="Cari game..." class="grow">
                 </label>
             </form>
-            <a href="{{ route('home') }}" class="block">Beranda</a>
-            <a href="{{ route('games.index') }}" class="block">Game</a>
+            <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 hover:bg-base-300/60">Beranda</a>
+            <a href="{{ route('games.index') }}" class="block rounded-lg px-3 py-2 hover:bg-base-300/60">Game</a>
             @auth
-                <a href="{{ route('library.index') }}" class="block">Library Saya</a>
+                <a href="{{ route('library.index') }}" class="block rounded-lg px-3 py-2 hover:bg-base-300/60">Library Saya</a>
             @endauth
         </div>
     </header>
@@ -105,7 +110,7 @@
         @yield('content')
     </main>
 
-    <footer class="border-t border-base-content/10 bg-base-100">
+    <footer class="border-t border-base-content/10 bg-base-200">
         <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm md:flex-row md:items-center md:justify-between">
             <div class="flex items-center gap-2 font-display font-bold">
                 <span class="hero-gradient flex size-7 items-center justify-center rounded-lg text-white">
