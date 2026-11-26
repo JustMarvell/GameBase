@@ -50,7 +50,7 @@ class ReviewController extends Controller
 
         $review->update($request->validate($this->rules(), $this->messages()));
 
-        return redirect()->route('games.show', $review->game_id)
+        return redirect()->route('games.show', $review->game)
             ->with('success', 'Ulasan berhasil diperbarui.');
     }
 

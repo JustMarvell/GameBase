@@ -13,12 +13,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Concerns\HasSlug;
 
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, Notifiable, HasSlug;
     protected ?array $libraryIdsCache = null;
 
     protected $fillable = [
@@ -74,5 +75,10 @@ class User extends Authenticatable
     public function developedGames(): HasMany
     {
         return $this->hasMany(Game::class, 'developer_id');
+    }
+
+    protected function slugSource(): string
+    {
+        return 'name';
     }
 }

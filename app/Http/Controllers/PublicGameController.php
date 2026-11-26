@@ -45,7 +45,11 @@ class PublicGameController extends Controller
 
     public function show(Game $game)
     {
-        $game->load(['genre', 'platforms', 'media', 'reviews' => fn($q) => $q->with('user.roles')->latest()]);
+        if (request()->segment(2) !== $game->slug) {
+            return redirect()->route('games.show', array_merge(['game' => $game], request()->query()), 301);
+        }
+
+        $game->load(['genre', 'platforms', 'media', 'developerAccount', 'reviews' => fn ($q) => $q->with('user.roles')->latest()]);
         $game->loadAvg('reviews', 'rating');
 
         $related = Game::with('genre')

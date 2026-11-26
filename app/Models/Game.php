@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -65,5 +66,17 @@ class Game extends Model
     public function isManagedBy(User $user): bool
     {
         return $user->hasRole('admin') || ($this->developer_id !== null && (int) $this->developer_id === $user->id);
+    }
+
+    use HasSlug;
+
+    protected function slugSource(): string
+    {
+        return 'title';
+    }
+
+    public function developerAccount(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'developer_id');
     }
 }

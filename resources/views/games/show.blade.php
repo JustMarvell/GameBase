@@ -66,8 +66,8 @@
                 <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-lg border border-base-content/10 bg-base-200/50 p-4 text-sm">
                     <dt class="text-base-content/60">Developer</dt>
                     <dd class="font-semibold">
-                        @if ($game->developer_id)
-                            <a href="{{ route('users.show', $game->developer_id) }}" class="link link-primary inline-flex items-center gap-1">
+                        @if ($game->developerAccount)
+                            <a href="{{ route('users.show', $game->developerAccount) }}" class="link link-primary inline-flex items-center gap-1">
                                 {{ $game->developer }} <x-icon name="chevron-right" class="size-4" />
                             </a>
                         @else

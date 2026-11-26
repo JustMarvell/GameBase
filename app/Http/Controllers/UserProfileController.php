@@ -10,6 +10,10 @@ class UserProfileController extends Controller
 {
     public function show(User $user)
     {
+        if (request()->segment(2) !== $user->slug) {
+            return redirect()->route('users.show', array_merge(['user' => $user], request()->query()), 301);
+        }
+        
         $viewer = auth()->user();
         $isOwner = $viewer && $viewer->id === $user->id;
         $isDeveloper = $user->hasRole('developer');
