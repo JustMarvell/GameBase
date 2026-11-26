@@ -121,5 +121,51 @@
                 </div>
             </div>
         </form>
+
+        {{-- ===== HAPUS AKUN ===== --}}
+        @unless ($user->hasRole('admin'))
+            <div class="card ring-1 ring-error/30" x-data="{ open: {{ $errors->deleteAccount->any() ? 'true' : 'false' }} }">
+                <div class="card-body gap-3">
+                    <h2 class="font-bold text-error">Hapus akun</h2>
+                    <p class="text-sm text-base-content/70">
+                        Akun, library, dan semua ulasan Anda akan dihapus permanen dan tidak bisa dikembalikan.
+                        @role('developer')
+                        Game yang Anda buat tetap ada di katalog, tetapi tidak lagi tertaut ke akun Anda.
+                        @endrole
+                    </p>
+                    <div>
+                        <button type="button" class="btn btn-soft btn-error btn-sm"
+                            @click="open = true; $nextTick(() => $refs.pw.focus())">
+                            Hapus akun saya
+                        </button>
+                    </div>
+                </div>
+
+                <div x-show="open" x-cloak x-transition.opacity @click.self="open = false" @keydown.escape.window="open = false"
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                    <form method="POST" action="{{ route('profile.destroy') }}" class="card w-full max-w-md bg-base-100 shadow-2xl">
+                        @csrf
+                        @method('DELETE')
+
+                        <div class="card-body gap-4">
+                            <h3 class="text-lg font-bold">Hapus akun secara permanen?</h3>
+                            <p class="text-sm text-base-content/70">Masukkan password Anda untuk konfirmasi.</p>
+
+                            <div>
+                                <input type="password" name="password" x-ref="pw" required autocomplete="current-password"
+                                    placeholder="Password" class="input">
+                                @error('password', 'deleteAccount')
+                                <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+                            </div>
+
+                            <div class="flex justify-end gap-2">
+                                <button type="button" class="btn btn-text" @click="open = false">Batal</button>
+                                <button type="submit" class="btn btn-error">Ya, hapus akun</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endunless
     </div>
 @endsection

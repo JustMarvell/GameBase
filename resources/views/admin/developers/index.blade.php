@@ -79,6 +79,10 @@
                                        class="btn btn-soft btn-primary btn-square btn-sm" aria-label="Edit" title="Edit developer">
                                         <x-icon name="pencil" class="size-4" />
                                     </a>
+                                    <button type="button" class="btn btn-soft btn-error btn-square btn-sm" aria-label="Hapus developer" title="Hapus developer"
+                                            @click="$dispatch('open-delete', @js(['action' => route('admin.developers.destroy', $developer), 'name' => 'akun developer '.$developer->name.' (game tetap ada di katalog)']))">
+                                        <x-icon name="trash" class="size-4" />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -95,4 +99,5 @@
     </div>
 
     <div class="mt-4">{{ $developers->links() }}</div>
+    <x-confirm-delete />
 @endsection

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use App\Support\AccountDeleter;
 
 class DeveloperController extends Controller
 {
@@ -227,5 +228,17 @@ class DeveloperController extends Controller
             ->update(['developer_id' => null]);
 
         return back()->with('success', "{$total} game dilepas dari {$developer->name}.");
+    }
+
+    public function destroy(User $developer)
+    {
+        $this->ensureDeveloper($developer);
+
+        $name = $developer->name;
+        $gameCount = $developer->developedGames()->count();
+
+        AccountDeleter::delete($developer);
+
+        return back()->with('success', "Developer {$name} dihapus. {$gameCount} game tetap ada di katalog tanpa akun developer.");
     }
 }

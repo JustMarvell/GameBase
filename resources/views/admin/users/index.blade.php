@@ -46,6 +46,7 @@
                         <th><x-sort-link column="name" label="Pengguna" /></th>
                         <th>Role</th>
                         <th><x-sort-link column="date" label="Bergabung" /></th>
+                        <th class="text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,10 +76,24 @@
                                 @endif
                             </td>
                             <td class="whitespace-nowrap text-sm">{{ $user->created_at->format('d M Y') }}</td>
+                            <td>
+                                <div class="flex justify-end gap-1">
+                                    <a href="{{ route('users.show', $user) }}" target="_blank"
+                                    class="btn btn-soft btn-secondary btn-square btn-sm" aria-label="Lihat profil" title="Lihat profil">
+                                        <x-icon name="eye" class="size-4" />
+                                    </a>
+                                    @unless ($user->hasRole('admin'))
+                                        <button type="button" class="btn btn-soft btn-error btn-square btn-sm" aria-label="Hapus akun" title="Hapus akun"
+                                                @click="$dispatch('open-delete', @js(['action' => route('admin.users.destroy', $user), 'name' => 'akun '.$user->name.' (beserta ulasan dan library-nya)']))">
+                                            <x-icon name="trash" class="size-4" />
+                                        </button>
+                                    @endunless
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="py-8 text-center text-base-content/60">
+                            <td colspan="4" class="py-8 text-center text-base-content/60">
                                 {{ $filtering ? 'Tidak ada pengguna yang cocok.' : 'Belum ada pengguna.' }}
                             </td>
                         </tr>
@@ -89,4 +104,5 @@
     </div>
 
     <div class="mt-4">{{ $users->links() }}</div>
+    <x-confirm-delete />
 @endsection

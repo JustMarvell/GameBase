@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Panel: admin and developer
@@ -59,10 +60,11 @@ Route::middleware(['auth', 'role:admin|developer'])
             Route::get('developers/assign', [DeveloperController::class, 'assign'])->name('developers.assign');
             Route::post('developers/assign', [DeveloperController::class, 'storeAssignment'])->name('developers.assign.store');
             Route::get('developers/search', [DeveloperController::class, 'search'])->name('developers.search');
-            Route::resource('developers', DeveloperController::class)->except(['show', 'destroy']);
+            Route::resource('developers', DeveloperController::class)->except('show');
             
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::put('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
+            Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
         });
     });
     

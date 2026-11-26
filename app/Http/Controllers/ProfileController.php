@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use App\Models\Game;
+use App\Support\AccountDeleter;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -81,5 +83,27 @@ class ProfileController extends Controller
         if ($user->avatar) {
             Storage::disk('public')->delete($user->avatar);
         }
+    }
+
+    public function destroy(Request $request)
+    {
+        $user = $request->user();
+
+        abort_unless(AccountDeleter::canDelete($user), 403);
+
+        $request->validateWithBag('deleteAccount', [
+            'password' => ['required', 'current_password'],
+        ], [
+            'password.required' => 'Masukkan password Anda untuk konfirmasi.',
+            'password.current_password' => 'Password salah.',
+        ]);
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        AccountDeleter::delete($user);
+
+        return redirect()->route('home')->with('success', 'Akun Anda telah dihapus. Sampai jumpa!');
     }
 }
