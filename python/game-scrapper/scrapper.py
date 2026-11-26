@@ -2,10 +2,11 @@ import csv, re, time, html
 import requests
 from yt_dlp import YoutubeDL
 
-GAME_LIMIT = 50            # how many games to scrape
+GAME_LIMIT = 1            # how many games to scrape
 OUTPUT = "games.csv"
 RAWG_KEY = ""              # optional: free key from rawg.io/apidocs for full platforms
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+DEV_CACHE = {}  # avoids looking up the same developer twice
 
 def get_app_ids(limit):
     ids, start = [], 0
@@ -55,6 +56,39 @@ def get_cover(appid, fallback):
         pass
     return fallback  # landscape header image
 
+def get_developer_description(dev_name):
+    if not dev_name:
+        return ""
+    if dev_name in DEV_CACHE:
+        return DEV_CACHE[dev_name]
+
+    desc = ""
+    wiki_headers = {"User-Agent": "GameScraper/1.0 (student project)"}
+    try:
+        # 1. search Wikipedia for the developer's page
+        search = requests.get("https://en.wikipedia.org/w/api.php", headers=wiki_headers, params={
+            "action": "query", "list": "search", "format": "json", "srlimit": 1,
+            "srsearch": f"{dev_name} video game developer",
+        }).json()
+        results = search["query"]["search"]
+
+        if results:
+            # 2. get that page's short summary
+            page = results[0]["title"].replace(" ", "_")
+            summary = requests.get(
+                f"https://en.wikipedia.org/api/rest_v1/page/summary/{page}",
+                headers=wiki_headers).json()
+            extract = summary.get("extract", "")
+
+            # 3. only keep it if it's actually about a game company
+            if re.search(r"game|developer|studio|publisher", extract, re.I):
+                desc = extract
+    except (requests.RequestException, KeyError, ValueError):
+        pass
+
+    DEV_CACHE[dev_name] = desc
+    return desc
+
 def steam_video(d):
     movies = d.get("movies", [])
     if not movies:
@@ -85,8 +119,8 @@ def get_rawg_platforms(title):
     except (KeyError, IndexError, requests.RequestException):
         return ""
     
-FIELDS = ["title", "developer", "release_year", "cover_image", "description",
-    "genre", "platforms", "images", "video"]
+FIELDS = ["title", "developer", "developer_description", "release_year", "cover_image",
+    "description", "genre", "platforms", "images", "video"]
 
 def main():
     ids = get_app_ids(GAME_LIMIT)
@@ -103,6 +137,8 @@ def main():
 
             game["platforms"] = get_rawg_platforms(game["title"]) or game["platforms"]
             game["video"] = find_youtube_trailer(game["title"]) or game["steam_video"]
+            first_dev = game["developer"].split(",")[0].strip()
+            game["developer_description"] = get_developer_description(first_dev)
 
             writer.writerow({k: game[k] for k in FIELDS})
             print(f"[{i}/{len(ids)}] {game['title']}")
