@@ -15,6 +15,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\DeveloperController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
@@ -54,9 +55,11 @@ Route::middleware(['auth', 'role:admin|developer'])
             Route::resource('genres', GenreController::class)->except('show');
             Route::resource('platforms', PlatformController::class)->except('show');
             Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
-
-            Route::get('developers/search', [AdminUserController::class, 'searchDevelopers'])->name('developers.search');
-            Route::resource('users', AdminUserController::class)->only(['index', 'create', 'store']);
+            
+            Route::get('developers/search', [DeveloperController::class, 'search'])->name('developers.search');
+            Route::resource('developers', DeveloperController::class)->except(['show', 'destroy']);
+            
+            Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::put('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
         });
     });

@@ -9,8 +9,8 @@
 
     <div class="mb-6 flex items-center justify-between">
         <p class="text-base-content/60">Kelola pengguna dan atur role developer.</p>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-            <x-icon name="plus" class="size-5" /> Akun Developer
+        <a href="{{ route('admin.developers.create') }}" class="btn btn-primary">
+            <x-icon name="plus" class="size-5" /> Tambah Developer
         </a>
     </div>
 

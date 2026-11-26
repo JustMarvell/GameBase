@@ -31,6 +31,7 @@ if (auth()->user()->hasRole('admin')) {
         ['admin.genres.index', 'Genre', 'tag'],
         ['admin.platforms.index', 'Platform', 'globe'],
         ['admin.reviews.index', 'Ulasan', 'newspaper'],
+        ['admin.developers.index', 'Developer', 'code'],
         ['admin.users.index', 'Pengguna', 'user'],
     ]);
 }
