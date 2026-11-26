@@ -142,4 +142,90 @@ class DeveloperController extends Controller
     {
         abort_unless($user->hasRole('developer'), 404);
     }
+
+    public function assign(Request $request)
+    {
+        $developers = User::role('developer')->orderBy('name')->get();
+
+        $developer = $request->filled('developer')
+            ? $developers->firstWhere('slug', $request->developer)
+            : null;
+
+        $games = null;
+        $counts = [];
+        $status = 'unassigned';
+
+        if ($developer) {
+            $counts = [
+                'unassigned' => Game::whereNull('developer_id')->count(),
+                'match' => Game::whereNull('developer_id')->where('developer', $developer->name)->count(),
+                'mine' => Game::where('developer_id', $developer->id)->count(),
+                'others' => Game::whereNotNull('developer_id')->where('developer_id', '!=', $developer->id)->count(),
+                'all' => Game::count(),
+            ];
+
+            // If some unlinked games already carry this developer's name, show those first
+            $status = in_array($request->status, ['unassigned', 'match', 'mine', 'others', 'all'])
+                ? $request->status
+                : ($counts['match'] > 0 ? 'match' : 'unassigned');
+
+            $games = Game::with(['genre', 'developerAccount'])
+                ->when($request->q, fn($query, $q) => $query->where(
+                    fn($w) => $w->where('title', 'like', "%{$q}%")
+                        ->orWhere('developer', 'like', "%{$q}%")
+                ))
+                ->when($status === 'unassigned', fn($query) => $query->whereNull('developer_id'))
+                ->when($status === 'match', fn($query) => $query
+                    ->whereNull('developer_id')->where('developer', $developer->name))
+                ->when($status === 'mine', fn($query) => $query->where('developer_id', $developer->id))
+                ->when($status === 'others', fn($query) => $query
+                    ->whereNotNull('developer_id')->where('developer_id', '!=', $developer->id))
+                ->latest()
+                ->paginate(20)
+                ->withQueryString();
+        }
+
+        return view('admin.developers.assign', compact('developers', 'developer', 'status', 'counts', 'games'));
+    }
+
+    public function storeAssignment(Request $request)
+    {
+        $data = $request->validate([
+            'developer' => ['required', 'string'],
+            'action' => ['required', 'in:assign,unassign'],
+            'games' => ['required', 'array', 'min:1'],
+            'games.*' => ['integer', 'exists:games,id'],
+        ], [
+            'games.required' => 'Pilih minimal satu game.',
+            'games.min' => 'Pilih minimal satu game.',
+        ]);
+
+        $developer = User::role('developer')->where('slug', $data['developer'])->firstOrFail();
+
+        if ($data['action'] === 'assign') {
+            $fromOthers = Game::whereIn('id', $data['games'])
+                ->whereNotNull('developer_id')
+                ->where('developer_id', '!=', $developer->id)
+                ->count();
+
+            $total = Game::whereIn('id', $data['games'])->update([
+                'developer_id' => $developer->id,
+                'developer' => $developer->name,
+            ]);
+
+            $message = "{$total} game ditetapkan ke {$developer->name}.";
+            if ($fromOthers > 0) {
+                $message .= " ({$fromOthers} dialihkan dari developer lain)";
+            }
+
+            return back()->with('success', $message);
+        }
+
+        // Unassign: only games that currently belong to this developer
+        $total = Game::whereIn('id', $data['games'])
+            ->where('developer_id', $developer->id)
+            ->update(['developer_id' => null]);
+
+        return back()->with('success', "{$total} game dilepas dari {$developer->name}.");
+    }
 }

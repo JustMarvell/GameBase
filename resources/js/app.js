@@ -354,4 +354,20 @@ Alpine.data('developerPicker', (o) => ({
     },
 }));
 
+// Counts ticked games and handles "select all" on the assign page
+Alpine.data('gameSelector', () => ({
+    count: 0,
+
+    recount() {
+        this.count = this.$root.querySelectorAll('[data-game]:checked').length;
+    },
+
+    toggleAll(checked) {
+        this.$root.querySelectorAll('[data-game]').forEach((box) => {
+            box.checked = checked;
+        });
+        this.recount();
+    },
+}));
+
 Alpine.start();

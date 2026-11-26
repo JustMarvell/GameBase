@@ -55,7 +55,9 @@ Route::middleware(['auth', 'role:admin|developer'])
             Route::resource('genres', GenreController::class)->except('show');
             Route::resource('platforms', PlatformController::class)->except('show');
             Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
-            
+
+            Route::get('developers/assign', [DeveloperController::class, 'assign'])->name('developers.assign');
+            Route::post('developers/assign', [DeveloperController::class, 'storeAssignment'])->name('developers.assign.store');
             Route::get('developers/search', [DeveloperController::class, 'search'])->name('developers.search');
             Route::resource('developers', DeveloperController::class)->except(['show', 'destroy']);
             

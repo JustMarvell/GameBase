@@ -9,9 +9,14 @@
 
     <div class="mb-6 flex items-center justify-between gap-4">
         <p class="text-base-content/60">Kelola akun developer dan lihat performa game mereka.</p>
-        <a href="{{ route('admin.developers.create') }}" class="btn btn-primary">
-            <x-icon name="plus" class="size-5" /> Tambah Developer
-        </a>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('admin.developers.assign') }}" class="btn btn-soft btn-secondary">
+                <x-icon name="tag" class="size-5" /> Tetapkan Game
+            </a>
+            <a href="{{ route('admin.developers.create') }}" class="btn btn-primary">
+                <x-icon name="plus" class="size-5" /> Tambah Developer
+            </a>
+        </div>
     </div>
 
     <form method="GET" action="{{ route('admin.developers.index') }}" class="card mb-6">
@@ -65,6 +70,10 @@
                                     <a href="{{ route('users.show', $developer) }}" target="_blank"
                                        class="btn btn-soft btn-secondary btn-square btn-sm" aria-label="Halaman publik" title="Lihat halaman publik">
                                         <x-icon name="eye" class="size-4" />
+                                    </a>
+                                    <a href="{{ route('admin.developers.assign', ['developer' => $developer->slug]) }}"
+                                    class="btn btn-soft btn-success btn-square btn-sm" aria-label="Tetapkan game" title="Tetapkan game">
+                                        <x-icon name="plus" class="size-4" />
                                     </a>
                                     <a href="{{ route('admin.developers.edit', $developer) }}"
                                        class="btn btn-soft btn-primary btn-square btn-sm" aria-label="Edit" title="Edit developer">
