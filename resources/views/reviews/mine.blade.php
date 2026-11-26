@@ -30,9 +30,9 @@
 
                             <div class="flex-1">
                                 <a href="{{ route('games.show', $review->game) }}" class="font-bold hover:text-primary">{{ $review->game->title }}</a>
-                                <p class="flex items-center gap-1 text-sm font-semibold">
-                                    <x-icon name="star" class="size-4 fill-amber-400 text-amber-400" /> {{ $review->rating }}/10
-                                </p>
+                                <span class="badge badge-soft badge-warning mt-1 gap-1 font-bold">
+                                    <x-icon name="star" class="size-3.5 fill-current" /> {{ $review->rating }}/10
+                                </span>
                                 @if ($review->body)
                                     <p class="mt-1 text-sm text-base-content/80">{{ Str::limit($review->body, 150) }}</p>
                                 @endif

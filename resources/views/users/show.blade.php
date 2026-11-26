@@ -6,7 +6,7 @@
 
     {{-- ===== HEADER PROFIL ===== --}}
     <div class="card overflow-hidden">
-        <div class="hero-gradient h-28"></div>
+        <div class="hero-gradient h-24"></div>
 
         <div class="card-body pt-0">
             <div class="-mt-12 flex flex-wrap items-end justify-between gap-4">
@@ -54,34 +54,34 @@
 
             @if ($isDeveloper)
                 <div class="mt-5 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $devStats['games'] }}</p>
                         <p class="text-xs text-base-content/60">Game</p>
                     </div>
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $devStats['reviews'] }}</p>
                         <p class="text-xs text-base-content/60">Ulasan diterima</p>
                     </div>
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $devStats['rating'] ? number_format($devStats['rating'], 1) : '-' }}</p>
                         <p class="text-xs text-base-content/60">Rata-rata rating</p>
                     </div>
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $devStats['saves'] }}</p>
                         <p class="text-xs text-base-content/60">Disimpan di library</p>
                     </div>
                 </div>
             @else
                 <div class="mt-5 grid grid-cols-3 gap-3 text-center">
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $reviews->total() }}</p>
                         <p class="text-xs text-base-content/60">Ulasan</p>
                     </div>
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $libraryTotal ?? '-' }}</p>
                         <p class="text-xs text-base-content/60">Game di library</p>
                     </div>
-                    <div class="rounded-xl bg-base-200 p-3">
+                    <div class="rounded-lg border border-base-content/10 bg-base-200/60 p-3">
                         <p class="text-2xl font-extrabold">{{ $averageRating ? number_format($averageRating, 1) : '-' }}</p>
                         <p class="text-xs text-base-content/60">Rata-rata nilai</p>
                     </div>
@@ -166,9 +166,9 @@
 
                         <div class="min-w-0 flex-1">
                             <a href="{{ route('games.show', $review->game) }}" class="font-bold hover:text-primary">{{ $review->game->title }}</a>
-                            <p class="flex items-center gap-1 text-sm font-semibold">
-                                <x-icon name="star" class="size-4 fill-amber-400 text-amber-400" /> {{ $review->rating }}/10
-                            </p>
+                            <span class="badge badge-soft badge-warning mt-1 gap-1 font-bold">
+                                <x-icon name="star" class="size-3.5 fill-current" /> {{ $review->rating }}/10
+                            </span>
                             @if ($review->body)
                                 <p class="mt-1 text-sm text-base-content/80">{{ Str::limit($review->body, 200) }}</p>
                             @endif

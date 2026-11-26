@@ -74,7 +74,7 @@
                 @endrole
 
                 @unless ($user->hasRole('developer'))
-                <label class="flex items-center justify-between gap-4 rounded-xl border border-base-content/10 p-4">
+                <label class="flex items-center justify-between gap-4 rounded-lg border border-base-content/10 bg-base-200/50 p-4 transition-colors hover:border-primary/40">
                     <span>
                         <span class="block font-semibold">Tampilkan library di profil publik</span>
                         <span class="block text-sm text-base-content/60">Jika dimatikan, hanya Anda yang bisa melihat daftar game di library Anda.</span>
