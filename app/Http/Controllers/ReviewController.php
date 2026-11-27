@@ -69,7 +69,7 @@ class ReviewController extends Controller
     public function mine(Request $request)
     {
         $reviews = $request->user()->reviews()
-            ->with('genre')
+            ->with('game')
             ->latest()
             ->paginate(10);
 
