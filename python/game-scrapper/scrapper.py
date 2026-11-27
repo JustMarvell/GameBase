@@ -2,7 +2,7 @@ import csv, re, time, html
 import requests
 from yt_dlp import YoutubeDL
 
-GAME_LIMIT = 1            # how many games to scrape
+GAME_LIMIT = 100            # how many games to scrape
 OUTPUT = "games.csv"
 RAWG_KEY = ""              # optional: free key from rawg.io/apidocs for full platforms
 HEADERS = {"User-Agent": "Mozilla/5.0"}
