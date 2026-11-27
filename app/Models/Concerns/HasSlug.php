@@ -41,7 +41,7 @@ trait HasSlug
     protected function makeUniqueSlug(string $value): string
     {
         $name = Str::lower(class_basename($this));
-        $base = Str::slug($value) ?: $name;
+        $base = Str::slug(preg_replace('/[™®©℠]/u', '', $value)) ?: $name;
 
         if (ctype_digit($base)) {
             $base = "{$name}-{$base}";

@@ -56,10 +56,11 @@
 
                 <div x-data="{ len: {{ mb_strlen(old('bio', $user->bio ?? '')) }} }">
                     <label for="bio" class="label-text font-semibold">Bio (opsional)</label>
-                    <textarea id="bio" name="bio" rows="4" maxlength="300" class="textarea"
+                    @php $bioMax = $user->hasRole('developer') ? 1000 : 300; @endphp
+                    <textarea id="bio" name="bio" rows="4" maxlength="{{ $bioMax }}" class="textarea"
                               placeholder="Ceritakan sedikit tentang dirimu atau game favoritmu..."
                               @input="len = $event.target.value.length">{{ old('bio', $user->bio) }}</textarea>
-                    <p class="mt-1 text-right text-xs text-base-content/50"><span x-text="len"></span>/300</p>
+                    <p class="mt-1 text-right text-xs text-base-content/50"><span x-text="len"></span>/{{ $bioMax }}
                     @error('bio') <p class="text-sm text-error">{{ $message }}</p> @enderror
                 </div>
 

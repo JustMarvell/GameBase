@@ -57,9 +57,9 @@
 
     <div x-data="{ len: {{ mb_strlen(old('bio', $developer->bio ?? '')) }} }">
         <label for="bio" class="label-text font-semibold">Deskripsi developer (opsional)</label>
-        <textarea id="bio" name="bio" rows="4" maxlength="300" class="textarea"
+        <textarea id="bio" name="bio" rows="4" maxlength="1000" class="textarea"
                   @input="len = $event.target.value.length">{{ old('bio', $developer->bio ?? '') }}</textarea>
-        <p class="mt-1 text-right text-xs text-base-content/50"><span x-text="len"></span>/300</p>
+        <p class="mt-1 text-right text-xs text-base-content/50"><span x-text="len"></span>/1000</p>
         @error('bio') <p class="text-sm text-error">{{ $message }}</p> @enderror
     </div>
 

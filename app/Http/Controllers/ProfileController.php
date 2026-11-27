@@ -25,7 +25,7 @@ class ProfileController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'bio' => ['nullable', 'string', 'max:300'],
+            'bio' => ['nullable', 'string', 'max:' . ($isDeveloper ? 1000 : 300)],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
 

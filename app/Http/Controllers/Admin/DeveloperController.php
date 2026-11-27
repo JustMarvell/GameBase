@@ -110,7 +110,7 @@ class DeveloperController extends Controller
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($developer?->id)],
-            'bio' => ['nullable', 'string', 'max:300'],
+            'bio' => ['nullable', 'string', 'max:1000'],
             'website' => ['nullable', 'url:http,https', 'max:255'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'password' => [$developer ? 'nullable' : 'required', 'confirmed', Password::defaults()],

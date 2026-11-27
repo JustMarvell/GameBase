@@ -8,10 +8,17 @@
             @endphp
 
                 <div class="mb-6 flex items-center justify-between">
-                    <p class="text-base-content/60">Kelola data game.</p>
-                    <a href="{{ route('admin.games.create') }}" class="btn btn-primary">
-                        <x-icon name="plus" class="size-5" /> Tambah Game
-                    </a>
+                    <p class="text-base-content/60">Kelola data game</p>
+                    <div class="flex flex-wrap gap-2">
+                        @role('admin')
+                            <a href="{{ route('admin.games.import') }}" class="btn btn-soft btn-secondary">
+                                <x-icon name="plus" class="size-5" /> Impor CSV
+                            </a>
+                        @endrole
+                        <a href="{{ route('admin.games.create') }}" class="btn btn-primary">
+                            <x-icon name="plus" class="size-5" /> Tambah Game
+                        </a>
+                    </div>
                 </div>
 
                 <form method="GET" action="{{ route('admin.games.index') }}" class="card mb-6">

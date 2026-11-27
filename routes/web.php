@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DeveloperController;
+use App\Http\Controllers\Admin\GameImportController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [PublicGameController::class, 'index'])->name('games.index');
@@ -65,6 +66,13 @@ Route::middleware(['auth', 'role:admin|developer'])
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::put('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
             Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+
+            Route::get('games/import', [GameImportController::class, 'create'])->name('games.import');
+            Route::post('games/import', [GameImportController::class, 'upload'])->name('games.import.upload');
+            Route::get('games/import/preview', [GameImportController::class, 'preview'])->name('games.import.preview');
+            Route::post('games/import/run', [GameImportController::class, 'run'])->name('games.import.run');
+            Route::post('games/import/cancel', [GameImportController::class, 'cancel'])->name('games.import.cancel');
+            Route::get('games/import/template', [GameImportController::class, 'template'])->name('games.import.template');
         });
     });
     
