@@ -2,7 +2,7 @@
  
 Website perpustakaan dan ulasan game. Pengunjung bisa menjelajahi game, membaca ulasan, dan (setelah mendaftar) menyimpan game ke library pribadi, menulis ulasan, serta mengatur profil. Admin mengelola data game lewat dashboard.
  
-Proyek akhir mata kuliah **Framework Programming**, dibuat dengan Laravel 12.
+Proyek akhir mata kuliah **Framework Programming**, dibuat dengan Laravel
 
 ## Instalasi (Lokal)
  
