@@ -18,9 +18,9 @@
             </a>
 
             @php
-                $navLink = fn ($active) => 'relative py-5 transition-colors ' . ($active
-                    ? 'text-primary after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary'
-                    : 'text-base-content/70 hover:text-base-content');
+$navLink = fn($active) => 'relative py-5 transition-colors ' . ($active
+    ? 'text-primary after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary'
+    : 'text-base-content/70 hover:text-base-content');
             @endphp
 
             <div class="hidden items-center gap-6 text-sm font-semibold md:flex">
@@ -119,7 +119,7 @@
                 {{ config('app.name') }}
             </div>
             <p class="text-base-content/60">Temukan, mainkan, dan ulas game favoritmu.</p>
-            <p class="text-base-content/50">&copy; {{ date('Y') }} {{ config('app.name') }}. Dibuat dengan kopi dan kurang tidur.</p>
+            <p class="text-base-content/50">&copy; {{ date('Y') }} {{ config('app.name') }}. Made With °⋆♡︎.ೃ࿔:･ by VelloSaurus.</p>
         </div>
     </footer>
 
