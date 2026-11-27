@@ -2,9 +2,9 @@ import csv, re, time, html
 import requests
 from yt_dlp import YoutubeDL
 
-GAME_LIMIT = 15            # how many games to scrape
-OUTPUT = "seeder.csv"
-RAWG_KEY = ""              # optional: free key from rawg.io/apidocs for full platforms
+GAME_LIMIT = 200            # how many games to scrape
+OUTPUT = "games_200.csv"    # the result file name
+RAWG_KEY = ""              # optional: free key from rawg.io/apidocs for full platforms #site not working (will check later)
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 DEV_CACHE = {}  # avoids looking up the same developer twice
 
