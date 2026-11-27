@@ -13,7 +13,7 @@ class PublicGenreController extends Controller
         }
         
         $games = $genre->games()
-            ->with('genre')
+            ->with('genres')
             ->withAvg('reviews', 'rating')
             ->latest()
             ->paginate(12);

@@ -45,13 +45,13 @@ class GameDataSeeder extends Seeder
             $game = Game::firstOrCreate(
                 ['title' => $title],
                 [
-                    'genre_id' => $genres[$genre]->id,
                     'developer' => $developer,
                     'release_year' => $year,
                     'description' => "Contoh data untuk game {$title}.",
                 ]
             );
 
+            $game->genres()->syncWithoutDetaching([$genres[$genre]->id]);
             $game->platforms()->syncWithoutDetaching(
                 collect($platformNames)->map(fn($name) => $platforms[$name]->id)->all()
             );

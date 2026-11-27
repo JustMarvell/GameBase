@@ -132,7 +132,7 @@
                                             <a href="{{ route('games.show', $game) }}" target="_blank" class="font-semibold hover:text-primary">{{ $game->title }}</a>
                                         </div>
                                     </td>
-                                    <td><span class="badge badge-soft badge-secondary badge-sm">{{ $game->genre->name }}</span></td>
+                                    <td><x-genre-badges :game="$game" /></td>
                                     <td>{{ $game->release_year }}</td>
                                     <td>
                                         @if ($game->developerAccount)

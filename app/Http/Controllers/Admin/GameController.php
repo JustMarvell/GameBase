@@ -19,7 +19,8 @@ class GameController extends Controller
             'title' => ['required', 'max:255'],
             'developer' => ['required', 'max:100'],
             'release_year' => ['required', 'integer', 'min:1950', 'max:' . (date('Y') + 1)],
-            'genre_id' => ['required', 'exists:genres,id'],
+            'genres' => ['required', 'array', 'min:1'],
+            'genres.*' => ['exists:genres,id'],
             'platforms' => ['nullable', 'array'],
             'platforms.*' => ['exists:platforms,id'],
             'cover' => ['nullable', 'image', 'max:10240'],
@@ -52,14 +53,14 @@ class GameController extends Controller
         $column = $sorts[$request->sort] ?? 'created_at';
         $dir = $request->dir === 'asc' ? 'asc' : 'desc';
 
-        $games = Game::with(['genre', 'platforms'])
+        $games = Game::with(['genres', 'platforms'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->when($request->q, fn($query, $q) => $query->where(
                 fn($w) => $w->where('title', 'like', "%{$q}%")
                     ->orWhere('developer', 'like', "%{$q}%")
             ))
-            ->when($request->genre, fn($query, $id) => $query->where('genre_id', $id))
+            ->when($request->genre, fn($query, $id) => $query->whereHas('genres', fn($g) => $g->where('genres.id', $id)))
             ->when($request->platform, fn($query, $id) => $query->whereHas(
                 'platforms',
                 fn($p) => $p->where('platforms.id', $id)
@@ -94,7 +95,8 @@ class GameController extends Controller
     {
         $data = $this->validated($request);
 
-        $game = Game::create(collect($data)->except('platforms')->all());
+        $game = Game::create(collect($data)->except(['platforms', 'genres'])->all());
+        $game->genres()->sync($request->input('genres', []));
         $game->platforms()->sync($request->input('platforms', []));
 
         return redirect()->route('admin.games.media.index', $game)
@@ -104,7 +106,7 @@ class GameController extends Controller
     public function edit(Game $game)
     {
         $this->authorizeGame($game);
-        $game->load('platforms');
+        $game->load(['platforms', 'genres']);
 
         return view('admin.games.edit', [
             'game' => $game,
@@ -118,7 +120,8 @@ class GameController extends Controller
         $this->authorizeGame($game);
         $data = $this->validated($request, $game);
 
-        $game->update(collect($data)->except('platforms')->all());
+        $game->update(collect($data)->except(['platforms', 'genres'])->all());
+        $game->genres()->sync($request->input('genres', []));
         $game->platforms()->sync($request->input('platforms', []));
 
         return redirect()->route('admin.games.index')
@@ -190,7 +193,10 @@ class GameController extends Controller
             unset($rules['developer'], $rules['developer_id']);
         }
 
-        $data = $this->handleCover($request, $request->validate($rules), $game);
+        $data = $this->handleCover($request, $request->validate($rules, [
+            'genres.required' => 'Pilih minimal satu genre.',
+            'genres.min' => 'Pilih minimal satu genre.',
+        ]), $game);
 
         if (!$isAdmin) {
             $data['developer_id'] = $user->id;   // a developer always owns their games

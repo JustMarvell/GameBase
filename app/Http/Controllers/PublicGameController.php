@@ -11,14 +11,14 @@ class PublicGameController extends Controller
 {
     public function index(Request $request)
     {
-        $games = Game::with(['genre', 'platforms'])
+        $games = Game::with(['genres', 'platforms'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->when($request->q, fn($query, $q) => $query->where(
                 fn($w) => $w->where('title', 'like', "%{$q}%")
                     ->orWhere('developer', 'like', "%{$q}%")
             ))
-            ->when($request->genre, fn($query, $id) => $query->where('genre_id', $id))
+            ->when($request->genre, fn($query, $id) => $query->whereHas('genres', fn($g) => $g->where('genres.id', $id)))
             ->when($request->platform, fn($query, $id) => $query->whereHas(
                 'platforms',
                 fn($p) => $p->where('platforms.id', $id)
@@ -49,13 +49,13 @@ class PublicGameController extends Controller
             return redirect()->route('games.show', array_merge(['game' => $game], request()->query()), 301);
         }
 
-        $game->load(['genre', 'platforms', 'media', 'developerAccount', 'reviews' => fn ($q) => $q->with('user.roles')->latest()]);
+        $game->load(['genres', 'platforms', 'media', 'developerAccount', 'reviews' => fn ($q) => $q->with('user.roles')->latest()]);
         $game->loadAvg('reviews', 'rating');
 
-        $related = Game::with('genre')
+        $related = Game::with('genres')
             ->withAvg('reviews', 'rating')
-            ->where('genre_id', $game->genre_id)
             ->where('id', '!=', $game->id)
+            ->whereHas('genres', fn($q) => $q->whereIn('genres.id', $game->genres->pluck('id')))
             ->take(4)
             ->get();
 

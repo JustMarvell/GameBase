@@ -170,7 +170,7 @@ class DeveloperController extends Controller
                 ? $request->status
                 : ($counts['match'] > 0 ? 'match' : 'unassigned');
 
-            $games = Game::with(['genre', 'developerAccount'])
+            $games = Game::with(['genres', 'developerAccount'])
                 ->when($request->q, fn($query, $q) => $query->where(
                     fn($w) => $w->where('title', 'like', "%{$q}%")
                         ->orWhere('developer', 'like', "%{$q}%")

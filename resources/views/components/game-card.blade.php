@@ -15,7 +15,17 @@
         @endif
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/50 to-transparent"></div>
     
-        <span class="badge badge-sm absolute left-2 top-2 border-0 bg-base-200/85 text-secondary backdrop-blur">{{ $game->genre->name }}</span>
+        @php
+            $firstGenre = $game->genres->first();
+            $extraGenres = $game->genres->count() - 1;
+        @endphp
+        @if ($firstGenre)
+            <span class="badge badge-secondary absolute left-2 top-2">
+                {{ $firstGenre->name }}
+                @if ($extraGenres > 0)<span class="opacity-70">+{{ $extraGenres }}</span>@endif
+            </span>
+        @endif
+
         @auth
             @if (auth()->user()->hasInLibrary($game->id))
                 <span

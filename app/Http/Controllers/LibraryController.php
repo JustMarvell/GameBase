@@ -10,7 +10,7 @@ class LibraryController extends Controller
     public function index(Request $request)
     {
         $games = $request->user()->library()
-            ->with('genre')
+            ->with('genres')
             ->withAvg('reviews', 'rating')
             ->orderByPivot('created_at', 'desc')
             ->paginate(12);

@@ -36,7 +36,7 @@ class UserProfileController extends Controller
             $gameIds = $user->developedGames()->pluck('id');
 
             $data['devGames'] = $user->developedGames()
-                ->with('genre')
+                ->with('genres')
                 ->withAvg('reviews', 'rating')
                 ->latest()
                 ->paginate(12, ['*'], 'games');
@@ -48,12 +48,12 @@ class UserProfileController extends Controller
                 'saves' => DB::table('game_user')->whereIn('game_id', $gameIds)->count(),
             ];
 
-            $data['devGenres'] = Genre::whereHas('games', fn($q) => $q->where('developer_id', $user->id))
+            $data['devGenres'] = Genre::whereHas('games', fn($q) => $q->where('games.developer_id', $user->id))
                 ->orderBy('name')->get();
         } elseif ($user->library_public || $isOwner) {
             $data['libraryTotal'] = $user->library()->count();
             $data['libraryGames'] = $user->library()
-                ->with('genre')
+                ->with('genres')
                 ->withAvg('reviews', 'rating')
                 ->orderByPivot('created_at', 'desc')
                 ->take(12)

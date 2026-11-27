@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         // Slider: top-rated games (only games that have reviews)
-        $slides = Game::with('genre')
+        $slides = Game::with('genres')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->has('reviews')
@@ -20,7 +20,7 @@ class HomeController extends Controller
 
         // Fallback so the slider isn't empty before any review exists
         if ($slides->isEmpty()) {
-            $slides = Game::with('genre')
+            $slides = Game::with('genres')
                 ->withAvg('reviews', 'rating')
                 ->withCount('reviews')
                 ->latest()
@@ -28,7 +28,7 @@ class HomeController extends Controller
                 ->get();
         }
 
-        $latest = Game::with('genre')
+        $latest = Game::with('genres')
             ->withAvg('reviews', 'rating')
             ->latest()
             ->take(8)

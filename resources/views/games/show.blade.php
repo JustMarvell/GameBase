@@ -23,7 +23,7 @@
         @endif
 
             <div class="flex-1">
-                <a href="{{ route('genres.show', $game->genre) }}" class="badge badge-soft badge-secondary">{{ $game->genre->name }}</a>
+                <x-genre-badges :game="$game" :link="true" size="badge-md" />
                 <h1 class="mt-2 text-3xl font-extrabold">{{ $game->title }}</h1>
 
                 <div class="mt-3 flex items-center gap-2">
@@ -185,7 +185,7 @@
     {{-- ===== GAME SEJENIS ===== --}}
     @if ($related->isNotEmpty())
         <section class="mt-10">
-            <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Game {{ $game->genre->name }} Lainnya</h2>
+            <h2 class="mb-4 border-l-4 border-primary pl-3 text-xl font-extrabold">Game Serupa</h2>
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
                 @foreach ($related as $item)
                     <x-game-card :game="$item" />

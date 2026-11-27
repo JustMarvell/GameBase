@@ -82,7 +82,7 @@
                                             <div class="font-semibold">{{ $game->title }}</div>
                                             <div class="text-xs text-base-content/60">{{ $game->developer }}</div>
                                         </td>
-                                        <td><span class="badge badge-soft badge-secondary">{{ $game->genre->name }}</span></td>
+                                        <td><x-genre-badges :game="$game" /></td>
                                         <td>
                                             <div class="flex flex-wrap gap-1">
                                                 @forelse ($game->platforms as $platform)

@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class Game extends Model
 {
     protected $fillable = [
-        'genre_id',
         'title',
         'developer',
         'release_year',
@@ -24,9 +23,9 @@ class Game extends Model
         'developer_id',
     ];
 
-    public function genre(): BelongsTo
+    public function genres(): BelongsToMany
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsToMany(Genre::class);
     }
 
     public function platforms(): BelongsToMany

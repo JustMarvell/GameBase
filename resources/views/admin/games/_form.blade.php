@@ -68,18 +68,23 @@ $selected = old('platforms', isset($game) ? $game->platforms->pluck('id')->all()
         </div>
     </div>
 
+    @php
+        $selectedGenres = old('genres', isset($game) ? $game->genres->pluck('id')->all() : []);
+    @endphp
+
     <div>
-        <label for="genre_id" class="label-text font-semibold">Genre</label>
-        <select id="genre_id" name="genre_id" class="select" required>
-            <option value="">-- Pilih genre --</option>
+        <span class="label-text font-semibold">Genre (bisa lebih dari satu)</span>
+        <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
             @foreach ($genres as $genre)
-                <option value="{{ $genre->id }}" @selected(old('genre_id', $game->genre_id ?? '') == $genre->id)>
-                    {{ $genre->name }}
-                </option>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="genres[]" value="{{ $genre->id }}"
+                        class="checkbox checkbox-primary checkbox-sm"
+                        @checked(in_array($genre->id, $selectedGenres))>
+                    <span class="label-text">{{ $genre->name }}</span>
+                </label>
             @endforeach
-        </select>
-        @error('genre_id')
-        <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
+        </div>
+        @error('genres') <p class="mt-1 text-sm text-error">{{ $message }}</p> @enderror
     </div>
 
     <div>

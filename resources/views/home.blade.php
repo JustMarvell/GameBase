@@ -29,7 +29,9 @@
 
                     <div class="relative flex h-full items-end justify-between gap-6 p-6 md:p-10">
                         <div class="max-w-xl text-white">
-                            <span class="badge border-0 bg-base-200/80 text-secondary backdrop-blur">{{ $game->genre->name }}</span>
+                            @foreach ($game->genres->take(2) as $genre)
+                                <span class="badge badge-accent">{{ $genre->name }}</span>
+                            @endforeach
                             @auth
                                 @if (auth()->user()->hasInLibrary($game->id))
                                     <span class="badge badge-success ml-1 gap-1">
